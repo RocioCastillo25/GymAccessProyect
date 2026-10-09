@@ -1,0 +1,41 @@
+# Dependencias
+node_modules/
+
+# Compilación
+frontend/dist/
+backend/build/
+dist/
+build/
+
+# Entorno y secretos (SC-005, FR-026)
+.env
+.env.local
+.env.*.local
+backend/.env
+*.pem
+*.key
+
+# Archivos físicos de MySQL
+*.ibd
+*.frm
+*.myd
+*.myi
+ibdata*
+ib_logfile*
+
+# Registros
+*.log
+npm-debug.log*
+logs/
+
+# Pruebas y cobertura
+coverage/
+.vitest/
+
+# Sistema y editores
+.DS_Store
+Thumbs.db
+*.tmp
+*.swp
+.vscode/
+.idea/
