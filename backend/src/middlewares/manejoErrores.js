@@ -20,7 +20,23 @@ export function manejarErrores(error, req, res, next) {
   if (error && error.code === 'ER_DUP_ENTRY') {
     return res
       .status(409)
-      .json({ mensaje: 'El correo ya está registrado.', codigo: 'DUPLICADO' });
+      .json({ mensaje: 'El registro ya existe.', codigo: 'DUPLICADO' });
+  }
+
+  // Error de clave foránea: se referencia un registro inexistente (FR-029).
+  if (error && (error.code === 'ER_NO_REFERENCED_ROW_2' || error.code === 'ER_NO_REFERENCED_ROW')) {
+    return res.status(400).json({
+      mensaje: 'Los datos hacen referencia a un registro que no existe.',
+      codigo: 'VALIDACION',
+    });
+  }
+
+  // Error de restricción: se intenta borrar un registro con historial (FR-014, FR-025).
+  if (error && (error.code === 'ER_ROW_IS_REFERENCED_2' || error.code === 'ER_ROW_IS_REFERENCED')) {
+    return res.status(409).json({
+      mensaje: 'El registro tiene información relacionada y no puede eliminarse.',
+      codigo: 'DUPLICADO',
+    });
   }
 
   // Cualquier otro fallo: se registra solo en el servidor y se responde genérico.

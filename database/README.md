@@ -34,14 +34,19 @@ El aplicador:
 | Archivo | Contenido |
 |---------|-----------|
 | `001_crear_estructura.sql` | Tablas `usuarios`, `clientes`, `tipos_membresia`, `membresias` y `pagos` con llaves primarias, foráneas e índices únicos |
+| `002_sprint2_facial_accesos.sql` | Tablas `rostros`, `accesos` y `auditoria` del Sprint 2 |
+| `003_sprint3_entrenadores_rutinas.sql` | Tablas `entrenadores`, `asignaciones_entrenador`, `rutinas`, `ejercicios_rutina`, `objetivos_entrenamiento` y `progresos_clientes` del Sprint 3 |
 
 Los cambios de estructura futuros se agregan como **nuevos** archivos numerados
-(`002_*.sql`, `003_*.sql`); nunca se editan migraciones ya aplicadas.
+(`004_*.sql`, `005_*.sql`); nunca se editan migraciones ya aplicadas.
 
 ## Semillas
 
 - `seeds/semilla-administrador.js`: crea el usuario administrador inicial con hash `bcrypt`.
   Usa `SEED_ADMIN_EMAIL`, `SEED_ADMIN_PASSWORD` (mínimo 8 caracteres) y `SEED_ADMIN_NAME`.
+- `seeds/semilla-demo-sprint3.js`: datos de demostración del Sprint 3 (entrenador, asignación y
+  rutina). Es idempotente y usa `SEED_TRAINER_EMAIL`, `SEED_TRAINER_PASSWORD` y `SEED_TRAINER_NAME`;
+  se omite si no se define la contraseña. No está cableada en `aplicar-migraciones.js`.
 
 ## Reglas
 
@@ -50,3 +55,4 @@ Los cambios de estructura futuros se agregan como **nuevos** archivos numerados
 - Los scripts de `scripts/` usan ES Modules (FR-030).
 - Las tablas `tipos_membresia`, `membresias` y `pagos` son solo estructura en el Sprint 1
   (FR-027); sus datos funcionales llegan en el Sprint 2.
+- La base completa se reconstruye aplicando `001`, `002` y `003` en orden.

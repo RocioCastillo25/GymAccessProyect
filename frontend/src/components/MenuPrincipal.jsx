@@ -3,12 +3,22 @@
 
 import { useSesion } from '../context/SesionContext.jsx';
 
-// Opciones disponibles por rol en el Sprint 1 (project-context.md §6 y FR-014 a FR-017).
+// Opciones disponibles por rol (project-context.md §6 y FR-014 a FR-017).
 const OPCIONES = [
   { id: 'usuarios', etiqueta: 'Usuarios', roles: ['administrador'] },
   { id: 'clientes-lista', etiqueta: 'Clientes', roles: ['administrador', 'recepcionista', 'entrenador'] },
   { id: 'clientes-registro', etiqueta: 'Registrar cliente', roles: ['administrador', 'recepcionista'] },
   { id: 'clientes-edicion', etiqueta: 'Modificar cliente', roles: ['administrador', 'recepcionista'] },
+  { id: 'tipos-membresia', etiqueta: 'Tipos de membresía', roles: ['administrador', 'recepcionista', 'entrenador'] },
+  { id: 'membresias', etiqueta: 'Membresías', roles: ['administrador', 'recepcionista'] },
+  { id: 'pagos-registro', etiqueta: 'Registrar pago', roles: ['administrador', 'recepcionista'] },
+  { id: 'entrenadores', etiqueta: 'Entrenadores', roles: ['administrador'] },
+  { id: 'asignaciones', etiqueta: 'Asignar entrenador', roles: ['administrador', 'recepcionista'] },
+  { id: 'personal-asignado', etiqueta: 'Personal asignado', roles: ['administrador', 'recepcionista'] },
+  { id: 'rutinas', etiqueta: 'Rutinas', roles: ['entrenador'] },
+  { id: 'progreso', etiqueta: 'Objetivos y progreso', roles: ['entrenador'] },
+  { id: 'dashboard', etiqueta: 'Dashboard', roles: ['administrador', 'recepcionista'] },
+  { id: 'mi-entrenamiento', etiqueta: 'Mi entrenamiento', roles: ['cliente'] },
   { id: 'mi-perfil', etiqueta: 'Mi información', roles: ['cliente'] },
 ];
 

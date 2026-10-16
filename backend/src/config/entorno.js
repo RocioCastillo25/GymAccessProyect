@@ -44,6 +44,11 @@ export const config = {
     secreto: process.env.JWT_SECRET || 'secreto_de_pruebas',
     expiracion: process.env.JWT_EXPIRES_IN || '60m',
   },
+  // Reconocimiento facial: umbral de coincidencia y máximo de intentos (research R4).
+  facial: {
+    umbral: Number(process.env.FACIAL_UMBRAL || 0.6),
+    maxIntentos: Number(process.env.FACIAL_MAX_INTENTOS || 3),
+  },
   puerto: Number(process.env.PORT || 3000),
   entorno: process.env.NODE_ENV || 'development',
 };

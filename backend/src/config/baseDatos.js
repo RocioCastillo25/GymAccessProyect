@@ -19,6 +19,9 @@ export function obtenerPool() {
       connectionLimit: 10,
       queueLimit: 0,
       charset: 'utf8mb4',
+      // Las columnas DATE (fecha_inicio/fecha_fin) se leen como 'YYYY-MM-DD' para
+      // compararlas sin desfases de zona horaria (Sprint 2, R5).
+      dateStrings: ['DATE'],
     });
   }
   return pool;

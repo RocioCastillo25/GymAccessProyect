@@ -10,6 +10,16 @@ import ClientesEdicion from './pages/ClientesEdicion.jsx';
 import ClientesLista from './pages/ClientesLista.jsx';
 import Usuarios from './pages/Usuarios.jsx';
 import MiPerfil from './pages/MiPerfil.jsx';
+import TiposMembresia from './pages/TiposMembresia.jsx';
+import Membresias from './pages/Membresias.jsx';
+import PagosRegistro from './pages/PagosRegistro.jsx';
+import Entrenadores from './pages/Entrenadores.jsx';
+import Asignaciones from './pages/Asignaciones.jsx';
+import Rutinas from './pages/Rutinas.jsx';
+import Progreso from './pages/Progreso.jsx';
+import Dashboard from './pages/Dashboard.jsx';
+import PersonalAsignado from './pages/PersonalAsignado.jsx';
+import MiEntrenamiento from './pages/MiEntrenamiento.jsx';
 
 // Registro de vistas: cada historia de usuario añade su página aquí.
 const VISTAS = {
@@ -18,6 +28,16 @@ const VISTAS = {
   'clientes-edicion': ClientesEdicion,
   'clientes-lista': ClientesLista,
   usuarios: Usuarios,
+  'tipos-membresia': TiposMembresia,
+  membresias: Membresias,
+  'pagos-registro': PagosRegistro,
+  entrenadores: Entrenadores,
+  asignaciones: Asignaciones,
+  rutinas: Rutinas,
+  progreso: Progreso,
+  dashboard: Dashboard,
+  'personal-asignado': PersonalAsignado,
+  'mi-entrenamiento': MiEntrenamiento,
   'mi-perfil': MiPerfil,
 };
 

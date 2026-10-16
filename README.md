@@ -3,7 +3,9 @@
 Plataforma web para administrar clientes, membresías, pagos y accesos mediante reconocimiento
 facial. Proyecto académico desarrollado en tres sprints.
 
-**Estado actual**: Sprint 1 (base del sistema, autenticación, usuarios, roles y clientes).
+**Estado actual**: Sprint 3 completado (entrenadores, asignación de entrenadores, rutinas,
+objetivos y progresos, consulta del cliente, dashboard administrativo y personal asignado), sobre
+la base de los Sprints 1 y 2.
 
 ## Estructura del proyecto
 
