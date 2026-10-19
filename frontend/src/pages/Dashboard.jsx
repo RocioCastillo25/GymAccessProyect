@@ -46,24 +46,18 @@ export default function Dashboard() {
 
       {error && <div className="mensaje-error">{error}</div>}
 
-      {resumen && (
-        <div className="tabla">
-          <table className="tabla">
-            <thead>
-              <tr>
-                <th>Indicador</th>
-                <th>Total</th>
-              </tr>
-            </thead>
-            <tbody>
-              {Object.entries(resumen).map(([clave, valor]) => (
-                <tr key={clave}>
-                  <td>{ETIQUETAS[clave] || clave}</td>
-                  <td>{valor}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+      {resumen && Object.keys(resumen).length === 0 && (
+        <p className="textosuave">No hay indicadores disponibles por el momento.</p>
+      )}
+
+      {resumen && Object.keys(resumen).length > 0 && (
+        <div className="rejilla-kpi">
+          {Object.entries(resumen).map(([clave, valor]) => (
+            <article className="kpi" key={clave}>
+              <span className="kpi-etiqueta">{ETIQUETAS[clave] || clave}</span>
+              <span className="kpi-valor">{valor}</span>
+            </article>
+          ))}
         </div>
       )}
     </section>

@@ -59,6 +59,10 @@ export async function usuarioYToken(rol, estado = 'activo') {
 export async function limpiarUsuariosPrueba() {
   if (usuariosCreados.length === 0) return;
   const marcadores = usuariosCreados.map(() => '?').join(', ');
+  await consultar(
+    `DELETE FROM auditoria WHERE id_usuario IN (${marcadores});`,
+    usuariosCreados
+  );
   await consultar(`DELETE FROM usuarios WHERE id_usuario IN (${marcadores});`, usuariosCreados);
   usuariosCreados.length = 0;
 }

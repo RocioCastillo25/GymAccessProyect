@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS `asignaciones_entrenador` (
   `estado` ENUM('activa', 'finalizada') NOT NULL DEFAULT 'activa',
   `cliente_principal_activo` INT UNSIGNED GENERATED ALWAYS AS (
     CASE WHEN `es_principal` = 1 AND `estado` = 'activa' THEN `id_cliente` ELSE NULL END
-  ) STORED,
+  ) VIRTUAL,
   PRIMARY KEY (`id_asignacion`),
   UNIQUE KEY `ux_asignaciones_principal_activo` (`cliente_principal_activo`),
   KEY `ix_asignaciones_cliente` (`id_cliente`),

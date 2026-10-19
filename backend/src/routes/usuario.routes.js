@@ -17,14 +17,13 @@ import { autorizar } from '../middlewares/autorizar.js';
 const router = Router();
 
 router.use(autenticar);
-router.use(autorizar('administrador'));
 
-router.get('/usuarios', listar);
-router.get('/usuarios/:id', obtener);
-router.post('/usuarios', crear);
-router.patch('/usuarios/:id', modificar);
-router.patch('/usuarios/:id/rol', cambiarRol);
-router.patch('/usuarios/:id/estado', cambiarEstadoUsuario);
-router.patch('/usuarios/:id/password', cambiarPassword);
+router.get('/usuarios', autorizar('administrador'), listar);
+router.get('/usuarios/:id', autorizar('administrador'), obtener);
+router.post('/usuarios', autorizar('administrador'), crear);
+router.patch('/usuarios/:id', autorizar('administrador'), modificar);
+router.patch('/usuarios/:id/rol', autorizar('administrador'), cambiarRol);
+router.patch('/usuarios/:id/estado', autorizar('administrador'), cambiarEstadoUsuario);
+router.patch('/usuarios/:id/password', autorizar('administrador'), cambiarPassword);
 
 export default router;

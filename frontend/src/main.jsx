@@ -1,7 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App.jsx';
-import './styles/base.css';
+import './styles/styles.css';
 
 // Punto de entrada de la aplicación (FR-033).
 createRoot(document.getElementById('root')).render(
