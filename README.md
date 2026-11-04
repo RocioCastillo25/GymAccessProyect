@@ -17,10 +17,36 @@ la base de los Sprints 1 y 2.
 └── specs/       # Especificación, plan y tareas de cada funcionalidad
 ```
 
+## Alcance por sprint
+
+- **Sprint 1**: autenticación con JWT, usuarios, roles, clientes y estructura base.
+- **Sprint 2**: membresías, pagos y control de acceso con reconocimiento facial.
+- **Sprint 3**: entrenadores, asignación de entrenador a cliente, rutinas con ejercicios,
+  objetivos y progresos, consulta del cliente, dashboard administrativo y personal asignado.
+
+El detalle de cada sprint está en `docs/sprint-1.md`, `docs/sprint-2.md` y `docs/sprint-3.md`.
+
+### Módulos del Sprint 3
+
+| Módulo | Pantalla | Endpoints principales | Roles |
+|--------|----------|-----------------------|-------|
+| Entrenadores | `Entrenadores.jsx` | `/api/entrenadores` | administrador (gestión), recepcionista (consulta) |
+| Asignaciones | `Asignaciones.jsx` | `/api/asignaciones` | administrador, recepcionista |
+| Rutinas | `Rutinas.jsx` | `/api/rutinas` | entrenador |
+| Objetivos y progresos | `Progreso.jsx` | `/api/objetivos`, `/api/progresos` | entrenador (gestión), administrador y recepcionista (consulta) |
+| Mi entrenamiento | `MiEntrenamiento.jsx` | `/api/rutinas/yo`, `/api/objetivos/yo`, `/api/progresos/yo` | cliente |
+| Dashboard | `Dashboard.jsx` | `/api/dashboard`, `/api/dashboard/personal` | administrador, recepcionista (resumen operativo) |
+| Personal asignado | `PersonalAsignado.jsx` | `/api/asignaciones/entrenador/:idEntrenador` | administrador, recepcionista, entrenador (carga propia) |
+
+La migración del sprint es `database/migrations/003_sprint3_entrenadores_rutinas.sql` y crea las
+tablas `entrenadores`, `asignaciones_entrenador`, `rutinas`, `ejercicios_rutina`,
+`objetivos_entrenamiento` y `progresos_clientes` en InnoDB con `utf8mb4`.
+
 ## Requisitos previos
 
 - Node.js 20 o superior
-- MySQL 8 o superior ejecutándose en local (puerto 3306)
+- MySQL 8 o superior ejecutándose en local (host y puerto configurados en `backend/.env` mediante
+  `DB_HOST` y `DB_PORT`)
 
 ## Instalación
 
@@ -57,8 +83,11 @@ cd frontend; npm test
 
 ## Validación de extremo a extremo
 
-Siga la guía de `specs/001-sprint-1-base-sistema/quickstart.md`, que incluye 18 escenarios de
-validación y el flujo de demostración de menos de 5 minutos.
+La validación del alcance vigente está en `specs/003-entrenadores-rutinas-dashboard/quickstart.md`,
+con 27 escenarios que cubren las 7 historias del Sprint 3, la matriz de permisos por rol y el flujo
+de demostración de menos de 5 minutos. Las guías de los sprints anteriores siguen disponibles en
+`specs/001-sprint-1-base-sistema/quickstart.md` y
+`specs/002-membresias-pagos-acceso-facial/quickstart.md`.
 
 ## Convenciones
 
