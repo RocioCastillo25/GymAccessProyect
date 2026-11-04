@@ -262,6 +262,28 @@ table.tabla {
   color: var(--color-error);
 }
 
+.etiqueta-estado.activa,
+.etiqueta-estado.cumplido {
+  background: rgba(74, 222, 128, 0.12);
+  color: var(--color-exito);
+}
+
+.etiqueta-estado.en_progreso {
+  background: rgba(251, 191, 36, 0.12);
+  color: var(--color-advertencia);
+}
+
+.etiqueta-estado.finalizada,
+.etiqueta-estado.archivada {
+  background: rgba(156, 163, 175, 0.14);
+  color: var(--text-secondary);
+}
+
+.etiqueta-estado.cancelado {
+  background: rgba(248, 113, 113, 0.12);
+  color: var(--color-error);
+}
+
 /* ---------- Estructura de la aplicación ---------- */
 
 .aplicacion {
