@@ -1,0 +1,1 @@
+ALTER TABLE pagos ADD INDEX idx_fecha_pago (fecha_pago); ALTER TABLE pagos ADD INDEX idx_metodo_pago (metodo_pago); ALTER TABLE accesos ADD INDEX idx_fecha_hora (fecha_hora); ALTER TABLE accesos ADD INDEX idx_tipo_acceso (tipo_acceso); ALTER TABLE membresias ADD INDEX idx_estado (estado); ALTER TABLE membresias ADD INDEX idx_fecha_fin (fecha_fin);
