@@ -533,6 +533,31 @@ table.tabla {
   text-align: center;
 }
 
+.captura-facial .visor-camera {
+  min-height: 240px;
+}
+
+.guia-rostro {
+  position: absolute;
+  inset: 12% 28%;
+  border: 2px dashed rgba(255, 146, 43, 0.9);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.lienzo-captura {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.captura-facial .acciones {
+  margin-top: var(--espaciado-md);
+}
+
 .resultado-acceso {
   border-radius: var(--radio-tarjeta);
   border: 1px solid var(--border-light);

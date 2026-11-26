@@ -2,26 +2,9 @@
 // El navegador solo captura el descriptor facial; la decisión de acceso la toma
 // el backend al comparar con los rostros registrados y la membresía vigente.
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import CapturaFacial from '../components/CapturaFacial.jsx';
 import { pedir } from '../services/api.js';
-
-let promesaModelos = null;
-let faceapi = null;
-
-// La librería de visión se carga bajo demanda para no penalizar el arranque.
-function cargarModelos() {
-  if (!promesaModelos) {
-    promesaModelos = import('@vladmandic/face-api').then((mod) => {
-      faceapi = mod;
-      return Promise.all([
-        faceapi.nets.tinyFaceDetector.loadFromUri('/models'),
-        faceapi.nets.faceLandmark68Net.loadFromUri('/models'),
-        faceapi.nets.faceRecognitionNet.loadFromUri('/models'),
-      ]);
-    });
-  }
-  return promesaModelos;
-}
 
 function formatearFechaHora(valor) {
   if (!valor) return '—';
@@ -31,12 +14,9 @@ function formatearFechaHora(valor) {
 }
 
 export default function Acceso() {
-  const videoRef = useRef(null);
-  const streamRef = useRef(null);
-  const [camaraActiva, setCamaraActiva] = useState(false);
+  const [accion, setAccion] = useState('validar');
   const [evaluando, setEvaluando] = useState(false);
   const [registrando, setRegistrando] = useState(false);
-  const [mensajeCamara, setMensajeCamara] = useState('');
   const [resultado, setResultado] = useState(null);
   const [error, setError] = useState('');
   const [exito, setExito] = useState('');
@@ -67,70 +47,15 @@ export default function Acceso() {
     cargarAccesos();
   }, [cargarClientes, cargarAccesos]);
 
-  const detenerCamara = useCallback(() => {
-    if (streamRef.current) {
-      streamRef.current.getTracks().forEach((pista) => pista.stop());
-      streamRef.current = null;
-    }
-    if (videoRef.current) videoRef.current.srcObject = null;
-    setCamaraActiva(false);
-  }, []);
-
-  useEffect(() => detenerCamara, [detenerCamara]);
-
-  useEffect(() => {
-    if (!camaraActiva || !videoRef.current || !streamRef.current) return;
-    videoRef.current.srcObject = streamRef.current;
-    const reproduccion = videoRef.current.play();
-    if (reproduccion?.catch) reproduccion.catch(() => {});
-  }, [camaraActiva]);
-
-  async function iniciarCamara() {
-    setError('');
-    setMensajeCamara('');
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
-      streamRef.current = stream;
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        await videoRef.current.play();
-      }
-      setCamaraActiva(true);
-    } catch {
-      setMensajeCamara('No se pudo acceder a la cámara. Verifique los permisos del navegador.');
-    }
-  }
-
-  async function capturarDescriptor() {
-    await cargarModelos();
-    return faceapi
-      .detectSingleFace(videoRef.current, new faceapi.TinyFaceDetectorOptions({ inputSize: 320 }))
-      .withFaceLandmarks()
-      .withFaceDescriptor();
-  }
-
-  async function validarAcceso() {
+  async function validarAcceso(descriptorFacial) {
     setError('');
     setExito('');
     setResultado(null);
-
-    if (!streamRef.current) {
-      setError('Inicie la cámara antes de validar el acceso.');
-      return;
-    }
-
     setEvaluando(true);
     try {
-      const deteccion = await capturarDescriptor();
-
-      if (!deteccion) {
-        setError('No se detectó un rostro. Acérquese a la cámara e intente de nuevo.');
-        return;
-      }
-
       const respuesta = await pedir('/api/accesos/validar', {
         method: 'POST',
-        body: JSON.stringify({ descriptorFacial: Array.from(deteccion.descriptor) }),
+        body: JSON.stringify({ descriptorFacial }),
       });
 
       setResultado({
@@ -147,14 +72,9 @@ export default function Acceso() {
     }
   }
 
-  async function registrarRostro() {
+  async function registrarRostro(descriptorFacial) {
     setError('');
     setExito('');
-
-    if (!streamRef.current) {
-      setError('Inicie la cámara antes de registrar un rostro.');
-      return;
-    }
     if (!idClienteRostro) {
       setError('Seleccione el cliente al que pertenece el rostro.');
       return;
@@ -162,12 +82,6 @@ export default function Acceso() {
 
     setRegistrando(true);
     try {
-      const deteccion = await capturarDescriptor();
-      if (!deteccion) {
-        setError('No se detectó un rostro. Acérquese a la cámara e intente de nuevo.');
-        return;
-      }
-
       const estado = await pedir(`/api/rostros/${idClienteRostro}`);
       const actualiza = Boolean(estado.tieneRostro);
       const respuesta = await pedir(
@@ -176,7 +90,7 @@ export default function Acceso() {
           method: actualiza ? 'PUT' : 'POST',
           body: JSON.stringify({
             idCliente: Number(idClienteRostro),
-            descriptorFacial: Array.from(deteccion.descriptor),
+            descriptorFacial,
           }),
         }
       );
@@ -190,13 +104,22 @@ export default function Acceso() {
     }
   }
 
+  function seleccionarAccion(nuevaAccion) {
+    setAccion(nuevaAccion);
+    setError('');
+    setExito('');
+  }
+
+  const etiquetaBoton = accion === 'registrar' ? 'Registrar rostro' : 'Validar acceso';
+  const alCapturar = accion === 'registrar' ? registrarRostro : validarAcceso;
+
   return (
     <>
       <section className="tarjeta">
         <h2>Reconocimiento facial y control de acceso</h2>
         <p className="textosuave">
-          Registre primero el rostro del cliente y luego valide su acceso. Todo intento queda
-          registrado con su resultado y motivo.
+          Elija la acción, capture el rostro y el sistema registrará el resultado. Todo intento de
+          acceso queda guardado con su motivo.
         </p>
 
         {exito && <div className="mensaje-exito">{exito}</div>}
@@ -218,39 +141,30 @@ export default function Acceso() {
           </select>
         </div>
 
-        <div className="panel-acceso">
-          <div>
-            <div className="visor-camera">
-              {camaraActiva ? (
-                <video ref={videoRef} playsInline muted />
-              ) : (
-                <p className="textosuave">{mensajeCamara || 'Cámara apagada'}</p>
-              )}
-            </div>
+        <div className="acciones" aria-label="Acción de la cámara">
+          <button
+            type="button"
+            className={accion === 'validar' ? '' : 'secundario'}
+            onClick={() => seleccionarAccion('validar')}
+          >
+            Modo: validar acceso
+          </button>
+          <button
+            type="button"
+            className={accion === 'registrar' ? '' : 'secundario'}
+            onClick={() => seleccionarAccion('registrar')}
+          >
+            Modo: registrar rostro
+          </button>
+        </div>
 
-            <div className="acciones">
-              {camaraActiva ? (
-                <button type="button" className="secundario" onClick={detenerCamara}>
-                  Detener cámara
-                </button>
-              ) : (
-                <button type="button" className="secundario" onClick={iniciarCamara}>
-                  Iniciar cámara
-                </button>
-              )}
-              <button
-                type="button"
-                className="secundario"
-                onClick={registrarRostro}
-                disabled={!camaraActiva || registrando || !idClienteRostro}
-              >
-                {registrando ? 'Registrando…' : 'Registrar rostro'}
-              </button>
-              <button type="button" onClick={validarAcceso} disabled={!camaraActiva || evaluando}>
-                {evaluando ? 'Validando…' : 'Validar acceso'}
-              </button>
-            </div>
-          </div>
+        <div className="panel-acceso">
+          <CapturaFacial
+            key={accion}
+            onCaptura={alCapturar}
+            etiquetaBoton={etiquetaBoton}
+            deshabilitado={evaluando || registrando}
+          />
 
           <div>
             {resultado ? (

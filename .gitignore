@@ -16,6 +16,7 @@ build/
 backend/.env
 backend/.env.*
 !backend/.env.example
+!frontend/.env.example
 *.pem
 *.key
 

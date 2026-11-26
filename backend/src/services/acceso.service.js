@@ -13,52 +13,15 @@ import {
 } from '../validators/comunes.validator.js';
 import { errorDescriptorInvalido } from '../utils/codigosError.js';
 import { errorNoEncontrado, errorValidacion } from '../utils/errores.js';
+import { distanciaEuclidea, mejorCoincidencia } from '../utils/distanciaFacial.js';
 import { config } from '../config/entorno.js';
 import { registrarAccion } from './auditoria.service.js';
 
 const MODULO = 'accesos';
 const RESULTADOS = ['autorizado', 'rechazado'];
 
-/**
- * Calcula la distancia euclídea entre dos descriptores faciales de 128 valores.
- * @param {Array<number>} a
- * @param {Array<number>} b
- * @returns {number}
- */
-export function distanciaEuclidiana(a, b) {
-  let suma = 0;
-  for (let i = 0; i < a.length; i += 1) {
-    const diferencia = a[i] - b[i];
-    suma += diferencia * diferencia;
-  }
-  return Math.sqrt(suma);
-}
-
-/**
- * Convierte el valor JSON que devuelve MySQL en un arreglo numérico.
- * @param {unknown} valor
- * @returns {Array<number>|null}
- */
-function normalizarDescriptor(valor) {
-  if (Array.isArray(valor)) return valor;
-  if (typeof valor === 'string') {
-    try {
-      const analizado = JSON.parse(valor);
-      return Array.isArray(analizado) ? analizado : null;
-    } catch {
-      return null;
-    }
-  }
-  if (Buffer.isBuffer(valor)) {
-    try {
-      const analizado = JSON.parse(valor.toString('utf8'));
-      return Array.isArray(analizado) ? analizado : null;
-    } catch {
-      return null;
-    }
-  }
-  return null;
-}
+// Se conserva el nombre anterior como alias para no romper importaciones existentes.
+export const distanciaEuclidiana = distanciaEuclidea;
 
 function validarFiltros(filtros = {}) {
   const limpios = {};
@@ -125,16 +88,15 @@ export async function validarAcceso(datos, usuario) {
   }
 
   const rostros = await rostroModelo.listarActivos();
-  let mejor = null;
-
-  for (const rostro of rostros) {
-    const almacenado = normalizarDescriptor(rostro.descriptor_facial);
-    if (!almacenado || almacenado.length !== datos.descriptorFacial.length) continue;
-    const distancia = distanciaEuclidiana(datos.descriptorFacial, almacenado);
-    if (!mejor || distancia < mejor.distancia) {
-      mejor = { idCliente: rostro.id_cliente, distancia };
-    }
-  }
+  const candidatos = rostros.map((rostro) => ({
+    idCliente: rostro.id_cliente,
+    descriptorFacial: rostro.descriptor_facial,
+  }));
+  const mejor = mejorCoincidencia(
+    datos.descriptorFacial,
+    candidatos,
+    config.facial.umbral
+  );
 
   let cliente = null;
   let membresia = null;
