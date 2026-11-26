@@ -30,7 +30,9 @@ describe('Menú superior por rol', () => {
     expect(screen.getByRole('link', { name: 'Clientes' })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Dashboard' })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Reportes' })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Auditoría' })).toBeInTheDocument();
     expect(screen.queryByRole('link', { name: 'Mi perfil' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: 'Mis accesos' })).not.toBeInTheDocument();
   });
 
   it('muestra solo la consulta de clientes al entrenador', () => {
@@ -42,6 +44,8 @@ describe('Menú superior por rol', () => {
     expect(screen.queryByRole('link', { name: 'Pagos' })).not.toBeInTheDocument();
     expect(screen.queryByRole('link', { name: 'Reportes' })).not.toBeInTheDocument();
     expect(screen.queryByRole('link', { name: 'Mi perfil' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: 'Auditoría' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: 'Mis accesos' })).not.toBeInTheDocument();
   });
 
   it('muestra reportes al recepcionista sin acceso a usuarios', () => {
@@ -49,6 +53,7 @@ describe('Menú superior por rol', () => {
 
     expect(screen.getByRole('link', { name: 'Reportes' })).toBeInTheDocument();
     expect(screen.queryByRole('link', { name: 'Usuarios' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: 'Auditoría' })).not.toBeInTheDocument();
   });
 
   it('muestra únicamente su información al cliente', () => {
@@ -56,6 +61,8 @@ describe('Menú superior por rol', () => {
 
     expect(screen.getByRole('link', { name: 'Mi perfil' })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Mi entrenamiento' })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Mis accesos' })).toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: 'Auditoría' })).not.toBeInTheDocument();
     expect(screen.queryByRole('link', { name: 'Usuarios' })).not.toBeInTheDocument();
     expect(screen.queryByRole('link', { name: 'Pagos' })).not.toBeInTheDocument();
     expect(screen.queryByRole('link', { name: 'Clientes' })).not.toBeInTheDocument();

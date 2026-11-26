@@ -578,6 +578,19 @@ table.tabla {
   margin-bottom: 0.5rem;
 }
 
+/* ---------- Filtros de consultas ---------- */
+
+.rejilla-filtros {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--espaciado-md);
+  align-items: end;
+}
+
+.rejilla-filtros .acciones {
+  grid-column: 1 / -1;
+}
+
 /* ---------- Pantalla de login ---------- */
 
 .contenedor-login {

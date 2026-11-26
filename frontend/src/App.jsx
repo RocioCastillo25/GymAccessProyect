@@ -20,6 +20,9 @@ import MisPagos from './pages/MisPagos.jsx';
 import Adeudos from './pages/Adeudos.jsx';
 import MisAdeudos from './pages/MisAdeudos.jsx';
 import Acceso from './pages/Acceso.jsx';
+import Accesos from './pages/Accesos.jsx';
+import MisAccesos from './pages/MisAccesos.jsx';
+import Auditoria from './pages/Auditoria.jsx';
 import Entrenadores from './pages/Entrenadores.jsx';
 import Asignaciones from './pages/Asignaciones.jsx';
 import Rutinas from './pages/Rutinas.jsx';
@@ -88,7 +91,25 @@ const MODULOS = [
   {
     base: '/access',
     titulo: 'Acceso',
-    vistas: [{ ruta: '', Componente: Acceso, roles: ROLES_RECEPCION }],
+    vistas: [
+      { ruta: '', etiqueta: 'Validación', Componente: Acceso, roles: ROLES_RECEPCION },
+      {
+        ruta: 'historial',
+        etiqueta: 'Historial',
+        Componente: Accesos,
+        roles: ['administrador', 'recepcionista', 'entrenador'],
+      },
+    ],
+  },
+  {
+    base: '/me/access',
+    titulo: 'Mis accesos',
+    vistas: [{ ruta: '', Componente: MisAccesos, roles: ['cliente'] }],
+  },
+  {
+    base: '/audit',
+    titulo: 'Auditoría',
+    vistas: [{ ruta: '', Componente: Auditoria, roles: ROLES_ADMIN }],
   },
   {
     base: '/training',
