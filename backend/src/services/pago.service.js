@@ -4,6 +4,7 @@ import * as pagoModelo from '../models/pago.model.js';
 import * as clienteModelo from '../models/cliente.model.js';
 import * as membresiaModelo from '../models/membresia.model.js';
 import { validarPago } from '../validators/pago.validator.js';
+import { validarConsultaPagos } from '../validators/pagoConsulta.validator.js';
 import { errorValidacion, errorDuplicado, errorNoEncontrado } from '../utils/errores.js';
 import { registrarAccion } from './auditoria.service.js';
 
@@ -68,4 +69,35 @@ export async function registrar(datos, usuario) {
   });
 
   return pagoModelo.buscarPorId(id);
+}
+
+/**
+ * Devuelve el historial paginado con filtros opcionales (005-FR-001, 005-FR-003).
+ * El total y el monto se calculan en el backend; las consultas son de solo lectura.
+ * @param {Object} query - Parámetros de la cadena de consulta.
+ * @returns {Promise<{pagos: Array, total: number, montoTotal: number, limite: number, offset: number, mensaje?: string}>}
+ */
+export async function listarPagos(query = {}) {
+  const { errores, valores } = validarConsultaPagos(query);
+  if (errores.length > 0) {
+    throw errorValidacion('Revise los filtros enviados.', errores);
+  }
+
+  const [total, pagos] = await Promise.all([
+    pagoModelo.contarFiltrados(valores),
+    pagoModelo.listarFiltrados(valores),
+  ]);
+  const montoTotal = pagos.reduce((suma, pago) => suma + Number(pago.monto), 0);
+
+  const respuesta = {
+    pagos,
+    total,
+    montoTotal: Number(montoTotal.toFixed(2)),
+    limite: valores.limite,
+    offset: valores.offset,
+  };
+  if (pagos.length === 0) {
+    respuesta.mensaje = 'No hay pagos para los filtros seleccionados.';
+  }
+  return respuesta;
 }

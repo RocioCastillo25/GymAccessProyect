@@ -15,6 +15,7 @@ import MiPerfil from './pages/MiPerfil.jsx';
 import TiposMembresia from './pages/TiposMembresia.jsx';
 import Membresias from './pages/Membresias.jsx';
 import PagosRegistro from './pages/PagosRegistro.jsx';
+import PagosHistorial from './pages/PagosHistorial.jsx';
 import Acceso from './pages/Acceso.jsx';
 import Entrenadores from './pages/Entrenadores.jsx';
 import Asignaciones from './pages/Asignaciones.jsx';
@@ -75,7 +76,10 @@ const MODULOS = [
   {
     base: '/payments',
     titulo: 'Pagos',
-    vistas: [{ ruta: '', Componente: PagosRegistro, roles: ROLES_RECEPCION }],
+    vistas: [
+      { ruta: '', etiqueta: 'Registro', Componente: PagosRegistro, roles: ROLES_RECEPCION },
+      { ruta: 'historial', etiqueta: 'Historial', Componente: PagosHistorial, roles: ROLES_RECEPCION },
+    ],
   },
   {
     base: '/access',

@@ -45,10 +45,10 @@ y entrega independientes.
 
 **IMPORTANTE**: ninguna historia de usuario puede comenzar hasta terminar esta fase.
 
-- [ ] T003 [P] Crear `backend/tests/unit/pagoConsulta.validator.test.js` con casos para `limite` de 1 a 200 con valor por defecto 50, `offset` entero ≥ 0 con valor por defecto 0, `fechaInicio` posterior a `fechaFin`, estados `pendiente|completado|cancelado`, `idCliente` entero positivo y errores con `{ campo, error }` y `codigo: VALIDACION`.
-- [ ] T004 Crear `backend/src/validators/pagoConsulta.validator.js` con `validarConsultaPagos(query)` que reutilice `validarId`, `validarFecha`, `validarEstadoPago`, `validarEnteroPositivo` y `validarEnteroNoNegativo` de `backend/src/validators/comunes.validator.js` y aplique literalmente: "`limite`: entero de 1 a 200" y "`offset`: entero ≥ 0".
-- [ ] T005 [P] Extender `backend/src/models/pago.model.js` con `listarFiltrados(filtros)` y `contarFiltrados(filtros)` usando `COLUMNAS_PAGO`, filtros opcionales de `id_cliente`, `estado` y rango `[fechaInicio 00:00:00, fechaFin + 1 día 00:00:00)`, orden "`fecha_pago DESC, id_pago DESC`" y `LIMIT ? OFFSET ?`, apoyándose en `ix_pagos_cliente` e `idx_fecha_pago`.
-- [ ] T006 [P] Agregar `obtenerClientePorCorreo(correo)` en `backend/src/services/cliente.service.js` usando `clienteModelo.buscarPorCorreo` y lanzando `errorNoEncontrado('No se encontró el cliente asociado a la sesión.')` cuando no exista el cliente.
+- [X] T003 [P] Crear `backend/tests/unit/pagoConsulta.validator.test.js` con casos para `limite` de 1 a 200 con valor por defecto 50, `offset` entero ≥ 0 con valor por defecto 0, `fechaInicio` posterior a `fechaFin`, estados `pendiente|completado|cancelado`, `idCliente` entero positivo y errores con `{ campo, error }` y `codigo: VALIDACION`.
+- [X] T004 Crear `backend/src/validators/pagoConsulta.validator.js` con `validarConsultaPagos(query)` que reutilice `validarId`, `validarFecha`, `validarEstadoPago`, `validarEnteroPositivo` y `validarEnteroNoNegativo` de `backend/src/validators/comunes.validator.js` y aplique literalmente: "`limite`: entero de 1 a 200" y "`offset`: entero ≥ 0".
+- [X] T005 [P] Extender `backend/src/models/pago.model.js` con `listarFiltrados(filtros)` y `contarFiltrados(filtros)` usando `COLUMNAS_PAGO`, filtros opcionales de `id_cliente`, `estado` y rango `[fechaInicio 00:00:00, fechaFin + 1 día 00:00:00)`, orden "`fecha_pago DESC, id_pago DESC`" y `LIMIT ? OFFSET ?`, apoyándose en `ix_pagos_cliente` e `idx_fecha_pago`.
+- [X] T006 [P] Agregar `obtenerClientePorCorreo(correo)` en `backend/src/services/cliente.service.js` usando `clienteModelo.buscarPorCorreo` y lanzando `errorNoEncontrado('No se encontró el cliente asociado a la sesión.')` cuando no exista el cliente.
 
 **Punto de control**: fundamentos listos; las historias pueden iniciar.
 
@@ -68,16 +68,16 @@ muestra "No hay pagos para los filtros seleccionados." cuando está vacío, resp
 
 > **Nota**: escribir primero estas pruebas y comprobar que fallan antes de la implementación.
 
-- [ ] T007 [P] [US1] Crear `backend/tests/integration/pagosHistorial.test.js` con `supertest` para cubrir administrador y recepcionista, filtros combinados, paginación por defecto y con `offset`, estado vacío, rango invertido (`400`), sin token (`401`), entrenador y cliente (`403`) y permanencia de `POST /api/pagos`.
-- [ ] T008 [P] [US1] Crear `frontend/src/tests/PagosHistorial.test.jsx` con React Testing Library y `frontend/src/tests/servidorFalso.js` para verificar la tabla, los filtros, la paginación y el mensaje "No hay pagos para los filtros seleccionados.".
+- [X] T007 [P] [US1] Crear `backend/tests/integration/pagosHistorial.test.js` con `supertest` para cubrir administrador y recepcionista, filtros combinados, paginación por defecto y con `offset`, estado vacío, rango invertido (`400`), sin token (`401`), entrenador y cliente (`403`) y permanencia de `POST /api/pagos`.
+- [X] T008 [P] [US1] Crear `frontend/src/tests/PagosHistorial.test.jsx` con React Testing Library y `frontend/src/tests/servidorFalso.js` para verificar la tabla, los filtros, la paginación y el mensaje "No hay pagos para los filtros seleccionados.".
 
 ### Implementación de la historia de usuario 1
 
-- [ ] T009 [US1] Implementar `listarPagos(filtros)` en `backend/src/services/pago.service.js`: validar con `validarConsultaPagos`, combinar `pagoModelo.contarFiltrados` y `pagoModelo.listarFiltrados`, sumar `montoTotal` de la página, devolver `{ pagos, total, montoTotal, limite, offset }` y agregar `mensaje` cuando no haya resultados.
-- [ ] T010 [US1] Implementar `listar` en `backend/src/controllers/pago.controller.js`: responder `200` con `pagos: presentarListaPagos(...)` y los campos devueltos por `listarPagos`, propagando errores con `next(error)`.
-- [ ] T011 [US1] Registrar `GET /api/pagos` en `backend/src/routes/pago.routes.js` con `autorizar('administrador', 'recepcionista')`, conservando intacta la ruta `POST /api/pagos`.
-- [ ] T012 [US1] Crear `frontend/src/pages/PagosHistorial.jsx` con filtros `fechaInicio`, `fechaFin`, `idCliente` y `estado`, tabla de pagos, controles de `limite`/`offset`, totales y mensajes en español, usando `pedir` de `frontend/src/services/api.js`.
-- [ ] T013 [US1] Registrar la vista `PagosHistorial` en `/payments/historial` para `administrador` y `recepcionista` en `frontend/src/App.jsx`, conservando `PagosRegistro` como vista principal del módulo.
+- [X] T009 [US1] Implementar `listarPagos(filtros)` en `backend/src/services/pago.service.js`: validar con `validarConsultaPagos`, combinar `pagoModelo.contarFiltrados` y `pagoModelo.listarFiltrados`, sumar `montoTotal` de la página, devolver `{ pagos, total, montoTotal, limite, offset }` y agregar `mensaje` cuando no haya resultados.
+- [X] T010 [US1] Implementar `listar` en `backend/src/controllers/pago.controller.js`: responder `200` con `pagos: presentarListaPagos(...)` y los campos devueltos por `listarPagos`, propagando errores con `next(error)`.
+- [X] T011 [US1] Registrar `GET /api/pagos` en `backend/src/routes/pago.routes.js` con `autorizar('administrador', 'recepcionista')`, conservando intacta la ruta `POST /api/pagos`.
+- [X] T012 [US1] Crear `frontend/src/pages/PagosHistorial.jsx` con filtros `fechaInicio`, `fechaFin`, `idCliente` y `estado`, tabla de pagos, controles de `limite`/`offset`, totales y mensajes en español, usando `pedir` de `frontend/src/services/api.js`.
+- [X] T013 [US1] Registrar la vista `PagosHistorial` en `/payments/historial` para `administrador` y `recepcionista` en `frontend/src/App.jsx`, conservando `PagosRegistro` como vista principal del módulo.
 
 **Punto de control**: la historia 1 funciona y se puede validar de forma independiente.
 
@@ -148,7 +148,7 @@ recibe `403`.
 
 **Propósito**: verificación final, rendimiento, documentación y seguridad.
 
-- [X] T033 [P] Ejecutar `npm test` en `backend/` y `frontend/`, corregir fallos y confirmar que no hay regresiones en `pagosRegistro.test.js` ni en las pruebas del Sprint 4.
+- [ ] T033 [P] Ejecutar `npm test` en `backend/` y `frontend/`, corregir fallos y confirmar que no hay regresiones en `pagosRegistro.test.js` ni en las pruebas del Sprint 4. Ejecutar solo después de completar T003-T032.
 - [ ] T034 [P] Verificar con `EXPLAIN` y la semilla de `database/seeds/semilla-rendimiento-sprint4.js` que las consultas usan `ix_pagos_cliente`, `idx_fecha_pago` o `idx_pagos_estado_fecha`, siguiendo `specs/005-consulta-pagos-adeudos/quickstart.md`.
 - [ ] T035 [P] Confirmar que no se modificaron `backend/package.json`, `frontend/package.json` ni `database/migrations/`, y que no hay secretos en `backend/.env.example` ni en el código nuevo.
 - [ ] T036 Revisar en `backend/src/utils/errores.js` y en `frontend/src/pages/PagosHistorial.jsx`, `MisPagos.jsx`, `Adeudos.jsx` y `MisAdeudos.jsx` que todos los mensajes de usuario están en español y no exponen información interna.
@@ -166,7 +166,7 @@ recibe `403`.
 - **Historias de usuario (Fases 3 a 5)**: dependen de los fundamentos.
   - US1 y US2 son P1 y pueden ejecutarse en paralelo si hay capacidad.
   - US3 es P2 y depende de US1 y US2 porque reutiliza el historial y la resolución del cliente.
-- **Fase 6 (Pulido)**: depende de que estén completas las historias deseadas.
+- **Fase 6 (Pulido)**: depende de que estén completas T003-T032; T033 no puede marcarse antes.
 
 ### Dependencias entre historias
 
