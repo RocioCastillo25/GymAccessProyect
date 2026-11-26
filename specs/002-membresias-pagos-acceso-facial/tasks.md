@@ -104,7 +104,7 @@ constituyen el MVP del sprint.
 - [X] T008 [P] Ampliar `backend/src/middlewares/manejoErrores.js` para mapear a HTTP los nuevos
   códigos (`DESCRIPTOR_INVALIDO` → `400`, `SIN_MEMBRESIA` → `404`, `ROSTRO_YA_REGISTRADO` → `409`)
   sin exponer detalles internos (FR-030) [RL3]
-- [ ] T009 Ejecutar `node database/scripts/aplicar-migraciones.js` y verificar que `rostros`,
+- [X] T009 Ejecutar `node database/scripts/aplicar-migraciones.js` y verificar que `rostros`,
   `accesos` y `auditoria` existen (FR-031, SC-007) [RL1]
 
 **Checkpoint**: infraestructura base del sprint lista. Si la migración de T004 no está aplicada, la
@@ -235,39 +235,39 @@ el sistema la asocia correctamente a ese cliente (spec.md, HU6).
 
 ### Pruebas para la Historia de usuario 6
 
-- [ ] T034 [P] [US6] Crear `backend/tests/integration/rostros.test.js`: registro válido (`201`),
+- [X] T034 [P] [US6] Crear `backend/tests/integration/rostros.test.js`: registro válido (`201`),
   cliente inexistente (`404` sin persistir), segundo registro actualiza sin duplicar (una sola fila),
   `descriptorFacial` con longitud distinta de 128 o no numérico (`400`), entrenador y cliente reciben
   `403`, y ninguna respuesta incluye `descriptorFacial` (FR-016, FR-017, FR-020, SC-002, SC-004) [RL5]
 
 ### Implementación para la Historia de usuario 6
 
-- [ ] T035 [US6] Crear `frontend/src/facerecognition/modelo.js` que carga los modelos desde
+- [X] T035 [US6] Crear `frontend/src/facerecognition/modelo.js` que carga los modelos desde
   `/models` con `@vladmandic/face-api` y expone una promesa lista para usarse (research R1, R13) [RL4]
-- [ ] T036 [US6] Crear `frontend/src/facerecognition/descriptor.js` que abre la cámara con
+- [X] T036 [US6] Crear `frontend/src/facerecognition/descriptor.js` que abre la cámara con
   `navigator.mediaDevices.getUserMedia` y genera el descriptor facial de 128 números (research R2,
   R11) [RL4]
-- [ ] T037 [US6] Crear `frontend/src/components/CapturaFacial.jsx` (video + canvas) reutilizable,
+- [X] T037 [US6] Crear `frontend/src/components/CapturaFacial.jsx` (video + canvas) reutilizable,
   con guía de encuadre, reintentos hasta `FACIAL_MAX_INTENTOS` y mensajes en español (research R4,
   principio XI) [RL4]
-- [ ] T038 [P] [US6] Crear `backend/src/models/rostro.model.js` con `registrarOActualizar`,
+- [X] T038 [P] [US6] Crear `backend/src/models/rostro.model.js` con `registrarOActualizar`,
   `buscarPorCliente` y `listarDescriptoresActivos` (este último solo devuelve datos internos)
   (FR-016, FR-017, research R3) [RL1]
-- [ ] T039 [US6] Crear `backend/src/validators/rostro.validator.js` que exija `idCliente` y
+- [X] T039 [US6] Crear `backend/src/validators/rostro.validator.js` que exija `idCliente` y
   `descriptorFacial` de 128 números (FR-029, research R4) [RL1]
-- [ ] T040 [US6] Crear `backend/src/services/rostro.service.js` con `registrar` (verifica cliente,
+- [X] T040 [US6] Crear `backend/src/services/rostro.service.js` con `registrar` (verifica cliente,
   hace *upsert* sin duplicar, nunca devuelve el descriptor y registra auditoría)
   (FR-016, FR-017, FR-020, FR-036) [RL1]
-- [ ] T041 [US6] Crear `backend/src/controllers/rostro.controller.js` que devuelva solo metadatos
+- [X] T041 [US6] Crear `backend/src/controllers/rostro.controller.js` que devuelva solo metadatos
   (`idCliente`, `fechaRegistro`, `estado`, `tieneRostro`) sin `descriptorFacial`
   (`contracts/api-rest.md` §4, FR-020) [RL1]
-- [ ] T042 [US6] Crear `backend/src/routes/rostro.routes.js` con `POST /api/rostros`,
+- [X] T042 [US6] Crear `backend/src/routes/rostro.routes.js` con `POST /api/rostros`,
   `PUT /api/rostros/:idCliente` y `GET /api/rostros/:idCliente` (estado), protegido con
   `autorizar('administrador','recepcionista')`, y registrarlo en `backend/src/routes/index.js`
   (FR-016) [RL1]
-- [ ] T043 [P] [US6] Crear `frontend/src/pages/RegistroFacial.jsx` que use `CapturaFacial` para
+- [X] T043 [P] [US6] Crear `frontend/src/pages/RegistroFacial.jsx` que use `CapturaFacial` para
   registrar/actualizar el rostro del cliente (FR-016, FR-017) [RL4]
-- [ ] T044 [US6] Registrar la página en `frontend/src/App.jsx` y validar los escenarios 14 a 16 de
+- [X] T044 [US6] Registrar la página en `frontend/src/App.jsx` y validar los escenarios 14 a 16 de
   `quickstart.md` (FR-016, FR-017, FR-020) [RL4]
 
 **Checkpoint**: la HU6 queda funcional y verificable de forma independiente.
@@ -285,21 +285,21 @@ y el sistema lo reconoce como el cliente correcto; un rostro sin coincidencia no
 
 ### Pruebas para la Historia de usuario 7
 
-- [ ] T045 [P] [US7] Crear `backend/tests/unit/distanciaFacial.test.js`: distancia euclídea correcta,
+- [X] T045 [P] [US7] Crear `backend/tests/unit/distanciaFacial.test.js`: distancia euclídea correcta,
   coincidencia dentro del umbral, rechazo por encima del umbral y selección del mejor candidato
   cuando hay varios rostros similares (FR-018, FR-019, research R14) [RL5]
-- [ ] T046 [P] [US7] Crear `backend/tests/integration/reconocimiento.test.js`: identificación de un
+- [X] T046 [P] [US7] Crear `backend/tests/integration/reconocimiento.test.js`: identificación de un
   descriptor conocido (cliente correcto) y de un descriptor sin coincidencia (`null`) contra filas
   reales de `rostros` (FR-018, FR-019, SC-005) [RL5]
 
 ### Implementación para la Historia de usuario 7
 
-- [ ] T047 [US7] Crear `backend/src/utils/distanciaFacial.js` con `distanciaEuclidea(a, b)` y
+- [X] T047 [US7] Crear `backend/src/utils/distanciaFacial.js` con `distanciaEuclidea(a, b)` y
   `mejorCoincidencia(descriptor, candidatos, umbral)` (FR-018, FR-019, research R4) [RL1]
-- [ ] T048 [US7] Crear `backend/src/services/reconocimiento.service.js` con `identificarCliente`
+- [X] T048 [US7] Crear `backend/src/services/reconocimiento.service.js` con `identificarCliente`
   (carga descriptores activos, calcula la mejor coincidencia y aplica el umbral `FACIAL_UMBRAL`)
   (FR-018, FR-019, research R2) [RL1]
-- [ ] T049 [US7] Validar la identificación ejecutando `backend/tests` y confirmar los escenarios 17
+- [X] T049 [US7] Validar la identificación ejecutando `backend/tests` y confirmar los escenarios 17
   y 18 de `quickstart.md` en su parte de identificación (FR-018, FR-019) [RL5]
 
 **Checkpoint**: la HU7 queda funcional y verificable de forma independiente a nivel de servicio.
@@ -316,7 +316,7 @@ vigente y lo rechaza si está vencida, suspendida, cancelada o no existe (spec.m
 
 ### Pruebas para la Historia de usuario 8
 
-- [ ] T050 [P] [US8] Crear `backend/tests/integration/accesosValidacion.test.js`: acceso autorizado
+- [X] T050 [P] [US8] Crear `backend/tests/integration/accesosValidacion.test.js`: acceso autorizado
   con membresía vigente (`resultado: autorizado` y fila en `accesos`), rechazo con membresía vencida,
   suspendida y cancelada, rechazo sin membresía, rechazo por rostro no reconocido (con `id_cliente`
   `NULL`) y `descriptorFacial` malformado (`400`); todos los casos registran el acceso con motivo
@@ -324,21 +324,21 @@ vigente y lo rechaza si está vencida, suspendida, cancelada o no existe (spec.m
 
 ### Implementación para la Historia de usuario 8
 
-- [ ] T051 [P] [US8] Crear `backend/src/models/acceso.model.js` con `registrar` y `buscarPorId`
+- [X] T051 [P] [US8] Crear `backend/src/models/acceso.model.js` con `registrar` y `buscarPorId`
   (FR-024, FR-025) [RL1]
-- [ ] T052 [US8] Crear `backend/src/validators/acceso.validator.js` que exija `descriptorFacial` de
+- [X] T052 [US8] Crear `backend/src/validators/acceso.validator.js` que exija `descriptorFacial` de
   128 números y `tipo` en `entrada`/`salida` (FR-029) [RL1]
-- [ ] T053 [US8] Crear `backend/src/services/acceso.service.js` con `validar`: identifica al cliente
+- [X] T053 [US8] Crear `backend/src/services/acceso.service.js` con `validar`: identifica al cliente
   (`reconocimiento.service`), valida la membresía vigente, determina el resultado y el motivo,
   registra el acceso y la auditoría, y devuelve el resultado (FR-021 a FR-024, FR-036, research R9) [RL1]
-- [ ] T054 [US8] Crear `backend/src/controllers/acceso.controller.js` con el controlador de
+- [X] T054 [US8] Crear `backend/src/controllers/acceso.controller.js` con el controlador de
   validación (respuesta `200` con `resultado`, `cliente`, `membresia`/`motivo` y `acceso`) [RL1]
-- [ ] T055 [US8] Crear `backend/src/routes/acceso.routes.js` con `POST /api/accesos/validar`
+- [X] T055 [US8] Crear `backend/src/routes/acceso.routes.js` con `POST /api/accesos/validar`
   protegido con `autorizar('administrador','recepcionista')` y registrarlo en
   `backend/src/routes/index.js` (FR-021, FR-028) [RL1]
-- [ ] T056 [P] [US8] Crear `frontend/src/pages/ControlAcceso.jsx` que usa `CapturaFacial` para
+- [X] T056 [P] [US8] Crear `frontend/src/pages/ControlAcceso.jsx` que usa `CapturaFacial` para
   capturar y muestra de forma clara el resultado (autorizado/rechazado) y el motivo (principio XI) [RL4]
-- [ ] T057 [US8] Registrar la página en `frontend/src/App.jsx` y validar los escenarios 19 a 22 y
+- [X] T057 [US8] Registrar la página en `frontend/src/App.jsx` y validar los escenarios 19 a 22 y
   25 de `quickstart.md` (FR-021 a FR-024, SC-003, SC-006) [RL4]
 
 **Checkpoint**: las seis historias P1 quedan funcionales; MVP ampliado del sprint completo.
@@ -355,24 +355,24 @@ queda reflejado en la consulta sin perder la anterior (spec.md, HU3).
 
 ### Pruebas para la Historia de usuario 3
 
-- [ ] T058 [P] [US3] Crear `backend/tests/integration/membresiasRenovacion.test.js`: renovación con
+- [X] T058 [P] [US3] Crear `backend/tests/integration/membresiasRenovacion.test.js`: renovación con
   membresía vigente extiende desde la `fechaFin` anterior (`201`), renovación con membresía vencida
   inicia hoy, cliente sin membresía previa devuelve `404`, y entrenador/cliente reciben `403`
   (FR-008, FR-009, FR-037, SC-002) [RL5]
 
 ### Implementación para la Historia de usuario 3
 
-- [ ] T059 [US3] Ampliar `backend/src/services/membresia.service.js` con `renovar`
+- [X] T059 [US3] Ampliar `backend/src/services/membresia.service.js` con `renovar`
   (`fecha_inicio = max(fecha_fin anterior, hoy)`, conserva la fila anterior, registra auditoría)
   (FR-008, FR-037, research R6) [RL3]
-- [ ] T060 [US3] Ampliar `backend/src/controllers/membresia.controller.js` con el controlador de
+- [X] T060 [US3] Ampliar `backend/src/controllers/membresia.controller.js` con el controlador de
   renovación (`contracts/api-rest.md` §2) [RL3]
-- [ ] T061 [US3] Ampliar `backend/src/routes/membresia.routes.js` con
+- [X] T061 [US3] Ampliar `backend/src/routes/membresia.routes.js` con
   `POST /api/membresias/:id/renovar` protegido con `autorizar('administrador','recepcionista')`
   (FR-008) [RL3]
-- [ ] T062 [P] [US3] Ampliar `frontend/src/pages/Membresias.jsx` con la acción de renovación y la
+- [X] T062 [P] [US3] Ampliar `frontend/src/pages/Membresias.jsx` con la acción de renovación y la
   confirmación correspondiente (FR-008, principio XI) [RL2]
-- [ ] T063 [US3] Validar los escenarios 7 y 8 de `quickstart.md` (FR-008) [RL5]
+- [X] T063 [US3] Validar los escenarios 7 y 8 de `quickstart.md` (FR-008) [RL5]
 
 **Checkpoint**: la HU3 queda funcional y verificable de forma independiente.
 
@@ -388,29 +388,29 @@ cliente ve únicamente su información (spec.md, HU5).
 
 ### Pruebas para la Historia de usuario 5
 
-- [ ] T064 [P] [US5] Crear `backend/tests/integration/pagosConsulta.test.js`: el administrador lista
+- [X] T064 [P] [US5] Crear `backend/tests/integration/pagosConsulta.test.js`: el administrador lista
   pagos y adeudos (membresía activa sin pago `completado`), el recepcionista/entrenador reciben `403`
   en la consulta administrativa, y el cliente solo ve sus propios pagos y adeudos
   (FR-012, FR-013, FR-015, SC-002) [RL5]
 
 ### Implementación para la Historia de usuario 5
 
-- [ ] T065 [P] [US5] Ampliar `backend/src/models/pago.model.js` con `listarHistorial` y
+- [X] T065 [P] [US5] Ampliar `backend/src/models/pago.model.js` con `listarHistorial` y
   `listarAdeudos` (consulta de membresías activas sin pago `completado`) (FR-012, FR-015,
   research R7) [RL1]
-- [ ] T066 [US5] Ampliar `backend/src/services/pago.service.js` con `historial`, `adeudos` y
+- [X] T066 [US5] Ampliar `backend/src/services/pago.service.js` con `historial`, `adeudos` y
   `propios` (FR-012, FR-013, FR-015) [RL3]
-- [ ] T067 [US5] Ampliar `backend/src/controllers/pago.controller.js` con los controladores de
+- [X] T067 [US5] Ampliar `backend/src/controllers/pago.controller.js` con los controladores de
   consulta (historial, adeudos y propios) [RL3]
 
 ### Implementación de la consulta (rutas y frontend)
 
-- [ ] T068 [US5] Ampliar `backend/src/routes/pago.routes.js` con `GET /api/pagos`,
+- [X] T068 [US5] Ampliar `backend/src/routes/pago.routes.js` con `GET /api/pagos`,
   `GET /api/pagos/adeudos` (`autorizar('administrador')`) y `GET /api/pagos/yo`
   (`autorizar('cliente')`) (FR-012, FR-013) [RL3]
-- [ ] T069 [P] [US5] Crear `frontend/src/pages/PagosConsulta.jsx` (historial y adeudos para
+- [X] T069 [P] [US5] Crear `frontend/src/pages/PagosConsulta.jsx` (historial y adeudos para
   administrador) y `frontend/src/pages/MisPagos.jsx` (pagos propios del cliente) (principio XI) [RL2]
-- [ ] T070 [US5] Registrar las páginas en `frontend/src/App.jsx` y validar los escenarios 12 y 13
+- [X] T070 [US5] Registrar las páginas en `frontend/src/App.jsx` y validar los escenarios 12 y 13
   de `quickstart.md` (FR-012, FR-013, FR-015) [RL2]
 
 **Checkpoint**: la HU5 queda funcional y verificable de forma independiente.
@@ -427,23 +427,23 @@ autorizadas y rechazadas con su motivo (spec.md, HU9).
 
 ### Pruebas para la Historia de usuario 9
 
-- [ ] T071 [P] [US9] Crear `backend/tests/integration/accesosConsulta.test.js`: administrador y
+- [X] T071 [P] [US9] Crear `backend/tests/integration/accesosConsulta.test.js`: administrador y
   recepcionista listan accesos con resultado y motivo, el entrenador recibe solo campos operativos de
   asistencia, el cliente solo ve sus accesos, y otro rol distinto de `cliente` recibe `403`
   (FR-025 a FR-027, SC-006) [RL5]
 
 ### Implementación para la Historia de usuario 9
 
-- [ ] T072 [US9] Ampliar `backend/src/services/acceso.service.js` con `consultar` y `propios`
+- [X] T072 [US9] Ampliar `backend/src/services/acceso.service.js` con `consultar` y `propios`
   (filtros por fecha, resultado y cliente, y filtrado por rol) (FR-025 a FR-027) [RL1]
-- [ ] T073 [US9] Crear `backend/src/controllers/accesoConsulta.controller.js` con los controladores
+- [X] T073 [US9] Crear `backend/src/controllers/accesoConsulta.controller.js` con los controladores
   de consulta (listado con filtros, propios del cliente) (FR-025 a FR-027) [RL1]
-- [ ] T074 [US9] Ampliar `backend/src/routes/acceso.routes.js` con `GET /api/accesos`,
+- [X] T074 [US9] Ampliar `backend/src/routes/acceso.routes.js` con `GET /api/accesos`,
   `GET /api/accesos/:id` y `GET /api/accesos/yo` (`autorizar(...)`) y registrarlo en
   `backend/src/routes/index.js` (FR-025, FR-027) [RL1]
-- [ ] T075 [P] [US9] Crear `frontend/src/pages/Accesos.jsx` (administrador/recepcionista/entrenador)
+- [X] T075 [P] [US9] Crear `frontend/src/pages/Accesos.jsx` (administrador/recepcionista/entrenador)
   y `frontend/src/pages/MisAccesos.jsx` (cliente) con filtros y estados en español (principio XI) [RL4]
-- [ ] T076 [US9] Registrar las páginas en `frontend/src/App.jsx` y validar los escenarios 23 y 24
+- [X] T076 [US9] Registrar las páginas en `frontend/src/App.jsx` y validar los escenarios 23 y 24
   de `quickstart.md` (FR-026, FR-027) [RL4]
 
 **Checkpoint**: las 9 historias quedan funcionales e independientes.
@@ -454,32 +454,55 @@ autorizadas y rechazadas con su motivo (spec.md, HU9).
 
 **Propósito**: auditoría, verificaciones de cumplimiento y validación final del sprint.
 
-- [ ] T077 [P] Crear `backend/src/controllers/auditoria.controller.js` y
+- [X] T077 [P] Crear `backend/src/controllers/auditoria.controller.js` y
   `backend/src/routes/auditoria.routes.js` con `GET /api/auditoria` protegido con
   `autorizar('administrador')`, registrándolo en `backend/src/routes/index.js`
   (FR-036, contracts/api-rest.md §5) [RL1]
-- [ ] T078 [P] Crear `frontend/src/pages/Auditoria.jsx` con filtros por módulo y fecha, y
+- [X] T078 [P] Crear `frontend/src/pages/Auditoria.jsx` con filtros por módulo y fecha, y
   registrarla en `frontend/src/App.jsx` solo para administrador (FR-036) [RL2]
-- [ ] T079 [P] Verificar en `backend/` la ausencia total de `require()` y `module.exports` y la
+- [X] T079 [P] Verificar en `backend/` la ausencia total de `require()` y `module.exports` y la
   presencia de `"type": "module"` en `backend/package.json` (FR-034, SC-009) [RL5]
-- [ ] T080 [P] Verificar que `.env` está en `.gitignore` y que `.env.example` (raíz y `backend/`) no
+- [X] T080 [P] Verificar que `.env` está en `.gitignore` y que `.env.example` (raíz y `backend/`) no
   contiene secretos reales (SC-008) [RL1]
-- [ ] T081 [P] Verificar que `frontend/` no contiene credenciales de base de datos ni acceso
+- [X] T081 [P] Verificar que `frontend/` no contiene credenciales de base de datos ni acceso
   directo a MySQL (FR-035, SC-009) [RL5]
-- [ ] T082 [P] Verificar que ningún endpoint devuelve `descriptorFacial` revisando controladores y
+- [X] T082 [P] Verificar que ningún endpoint devuelve `descriptorFacial` revisando controladores y
   presentadores del backend (FR-020, SC-004) [RL5]
 - [ ] T083 Reconstruir la base de datos desde cero: borrarla y reejecutar
   `node database/scripts/aplicar-migraciones.js` para confirmar SC-007 [RL1]
-- [ ] T084 Ejecutar la suite completa de pruebas (`backend: npm test` y `frontend: npm test`) y
+  **Pendiente de entorno**: el usuario MySQL configurado no puede crear bases. No se borró ni
+  modificó la base de trabajo; las migraciones `001` a `006` sí están aplicadas y registradas.
+- [X] T084 Ejecutar la suite completa de pruebas (`backend: npm test` y `frontend: npm test`) y
   corregir cualquier fallo antes de cerrar el sprint (principio X) [RL5]
-- [ ] T085 Ejecutar el flujo de demostración completo de `quickstart.md` §6 en menos de 5 minutos
+- [X] T085 Ejecutar el flujo de demostración completo de `quickstart.md` §6 en menos de 5 minutos
   con el administrador sembrado (SC-001, SC-010) [RL5]
-- [ ] T086 [P] Revisar que todos los mensajes mostrados al usuario están en español, son claros y no
+- [X] T086 [P] Revisar que todos los mensajes mostrados al usuario están en español, son claros y no
   revelan información técnica interna (FR-030, principio XI) [RL6]
-- [ ] T087 [P] Actualizar `README.md` y `database/README.md` con los pasos nuevos (dependencias
+- [X] T087 [P] Actualizar `README.md` y `database/README.md` con los pasos nuevos (dependencias
   faciales, migración 002, variables `FACIAL_*`) (FR-033) [RL7]
 
 ---
+
+## Nota de conciliación (funcionalidad 006)
+
+Las casillas marcadas en esta revisión reflejan el estado real del código, no una nueva
+implementación. Criterios aplicados:
+
+- T034, T039, T043, T044, T046, T048, T050, T052, T053, T056 y T057: la funcionalidad existe con
+  otros nombres (`Acceso.jsx`, `CapturaFacial.jsx`, `acceso.service.js`, `comunes.validator.js`) y
+  está cubierta por `accesos.test.js`, `CapturaFacial.test.jsx` y `distanciaFacial.test.js`.
+- T058 a T063: renovación implementada en `POST /api/membresias/:id/renovar` y verificada en
+  `backend/tests/integration/membresiasRenovacion.test.js`.
+- T064 a T070: superadas por la funcionalidad 005 (`specs/005-consulta-pagos-adeudos/tasks.md`,
+  T007 a T032) y sus suites de pagos y adeudos.
+- T071 a T078: consulta de accesos y auditoría implementadas en esta rama 006, con vistas
+  `Accesos.jsx`, `MisAccesos.jsx` y `Auditoria.jsx`.
+- T009 y T079 a T082, T084, T086 y T087: verificaciones ejecutadas y documentadas en `README.md`,
+  `database/README.md` y `docs/reporte-sprint-4.md`.
+- T085: demostración de siete pasos ejecutada por API en 0,17 s, con datos únicos y sin cámara
+  física (descriptor sintético equivalente al del navegador).
+- T083: continúa pendiente por falta de permisos de creación de bases en el usuario MySQL
+  configurado. No se borró ni modificó la base de trabajo.
 
 ## Dependencias y orden de ejecución
 

@@ -109,7 +109,7 @@ pruebas comprueban, por ejemplo:
 - Que un rango sin datos no rompa la pantalla.
 - Que las alertas incluyan solo membresías que vencen pronto.
 
-**Resultado final:** 177 pruebas del servidor y 41 pruebas de la pantalla, todas aprobadas.
+**Resultado final:** 225 pruebas del servidor y 93 pruebas de la pantalla, todas aprobadas.
 
 ### 4.4. Se probó la aplicación completa
 
@@ -333,16 +333,29 @@ los objetivos definidos.
 
 | Revisión | Resultado |
 |----------|-----------|
-| Pruebas automáticas del servidor | 177 aprobadas |
-| Pruebas automáticas de la pantalla | 41 aprobadas |
-| Compilación de la aplicación | Correcta |
-| Actualización de la base de datos | Correcta y repetible |
+| Pruebas automáticas del servidor | 225 aprobadas |
+| Pruebas automáticas de la pantalla | 93 aprobadas |
+| Compilación de la aplicación | Correcta (`npm run build`) |
+| Arranque del backend | Correcto (`GET /api/salud` → `200 {"estado":"ok","baseDatos":"conectada"}`) |
+| Revisión de secretos | Sin `.env` versionado; los `.env.example` solo contienen marcadores |
+| Actualización de la base de datos | Correcta y repetible; las seis migraciones están registradas |
 | Permisos por rol | Verificados |
 | Exportación CSV | Verificada |
 | Impresión o PDF | Verificada |
 | Reporte de clientes vencidos | Verificado |
 | Alertas de vencimiento | Verificadas |
 | Rendimiento con 10,000 pagos y 50,000 accesos | Objetivos cumplidos |
+| Demostración cronometrada de la funcionalidad 006 | 7 pasos en 0,17 s (objetivo: menos de 5 minutos) |
+
+Se agregaron las suites de componentes `ReportesFinanciero.test.jsx`, `ReportesAccesos.test.jsx`,
+`AlertasVencimiento.test.jsx`, `ReportesExportacion.test.jsx` y `ReportesVencidos.test.jsx`, además
+de un ayudante compartido. El cierre no agregó dependencias ni migraciones nuevas y dejó
+`POST /api/pagos` intacto.
+
+**Pendiente de entorno:** la reconstrucción completa de la base desde cero (T083 de la funcionalidad
+002) no se pudo ejecutar porque el usuario MySQL configurado no tiene permiso para crear bases. No
+se borró ni modificó la base de trabajo; la verificación se limitó a confirmar que las migraciones
+`001` a `006` están aplicadas y registradas.
 
 **Conclusión:** el Sprint 4 está completo y listo para demostración.
 

@@ -5,7 +5,8 @@ facial. Proyecto académico desarrollado en cuatro sprints.
 
 **Estado actual**: Sprint 4 completado (reportes financieros y de accesos, exportación CSV/PDF,
 alertas de vencimiento próximo y optimización de índices), sobre la base de los Sprints 1, 2 y 3,
-más la consulta operativa de pagos y adeudos de la funcionalidad 005.
+más la consulta operativa de pagos y adeudos de la funcionalidad 005 y el cierre de membresías,
+pagos y acceso facial de la funcionalidad 006.
 
 ## Estructura del proyecto
 
@@ -93,11 +94,41 @@ Sin token las respuestas son `401`; con un rol no autorizado, `403`. Los entrena
 consultar pagos ni adeudos. La validación detallada está en
 `specs/005-consulta-pagos-adeudos/quickstart.md`.
 
+### Cierre de membresías, pagos y acceso facial (funcionalidad 006)
+
+Completa los pendientes de la funcionalidad 002 sin crear migraciones nuevas ni modificar
+`POST /api/pagos`.
+
+| Endpoint | Operación | Roles autorizados |
+|----------|-----------|-------------------|
+| `POST /api/membresias/:id/renovar` | Renueva conservando la membresía anterior | administrador, recepcionista |
+| `POST /api/rostros` | Registra el descriptor facial sin devolverlo | administrador, recepcionista |
+| `PUT /api/rostros/:idCliente` | Actualiza el descriptor facial | administrador, recepcionista |
+| `GET /api/rostros/:idCliente` | Consulta solo el estado del rostro | administrador, recepcionista |
+| `POST /api/accesos/validar` | Identifica al cliente y registra el intento | administrador, recepcionista |
+| `GET /api/accesos` | Historial de accesos con filtros | administrador, recepcionista, entrenador |
+| `GET /api/accesos/:id` | Detalle de un acceso | administrador, recepcionista |
+| `GET /api/accesos/yo` | Accesos propios del cliente | cliente |
+| `GET /api/auditoria` | Consulta de auditoría con filtros | administrador |
+
+La renovación inicia en `max(fecha_fin anterior, hoy)` cuando la membresía está vigente y en hoy
+cuando está vencida, suspendida o cancelada; la fila anterior se conserva. La captura facial es un
+componente reutilizable (`CapturaFacial.jsx`) con un máximo de intentos configurable.
+
+| Vista | Ruta | Roles autorizados |
+|-------|------|-------------------|
+| Control de acceso | `/access` | administrador, recepcionista |
+| Historial de accesos | `/access/historial` | administrador, recepcionista, entrenador |
+| Mis accesos | `/me/access` | cliente |
+| Auditoría | `/audit` | administrador |
+
 ## Requisitos previos
 
 - Node.js 20 o superior
 - MySQL 8 o superior ejecutándose en local (host y puerto configurados en `backend/.env` mediante
   `DB_HOST` y `DB_PORT`)
+- Cámara web para la captura facial; los modelos se sirven desde `frontend/public/models/` y no
+  requieren descargas adicionales en tiempo de ejecución
 
 ## Instalación
 
@@ -111,10 +142,14 @@ copy .env.example .env
 copy backend\.env.example backend\.env
 # Editar .env y backend\.env con las credenciales reales de MySQL y un JWT_SECRET propio
 # Configurar también SEED_ADMIN_EMAIL, SEED_ADMIN_PASSWORD (mínimo 8 caracteres) y SEED_ADMIN_NAME
+# Opcional: FACIAL_UMBRAL=0.6, FACIAL_MAX_INTENTOS=3 y VITE_FACIAL_MAX_INTENTOS=3
 
 # 3. Base de datos: crearla, migrar y sembrar el administrador inicial
 node database/scripts/aplicar-migraciones.js
 ```
+
+La migración `002_sprint2_facial_accesos.sql` crea `rostros`, `accesos` y `auditoria`; las variables
+`FACIAL_UMBRAL` y `FACIAL_MAX_INTENTOS` ajustan el umbral y los reintentos de la captura facial.
 
 ## Ejecución del Sprint 4
 
@@ -144,7 +179,7 @@ cd backend; npm test
 cd frontend; npm test
 ```
 
-Resultado actual: 210 pruebas del backend y 59 pruebas del frontend, todas aprobadas.
+Resultado actual: 225 pruebas del backend y 93 pruebas del frontend, todas aprobadas.
 
 ## Rendimiento
 

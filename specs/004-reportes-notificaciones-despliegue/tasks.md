@@ -33,14 +33,14 @@ P1 (US1, US2, US3), luego P2 (US4, US5, US7) y al final P3 (US6).
 
 **Propósito**: dejar listas las piezas comunes que usan todos los reportes y las exportaciones.
 
-- [ ] T001 [P] Crear `backend/src/validators/reporte.validator.js` con validación de `fechaInicio` y
+- [X] T001 [P] Crear `backend/src/validators/reporte.validator.js` con validación de `fechaInicio` y
   `fechaFin` (`YYYY-MM-DD`, fechas reales, rango inclusivo, inicio ≤ fin), `idCliente` entero
   positivo, `metodoPago` texto no vacío, `resultado` en `autorizado|rechazado` y `buscar` texto
   opcional.
 - [X] T002 [P] Crear `frontend/src/utils/reportes.js` con helpers para construir CSV (BOM UTF-8,
   separador `;`, escape de comillas), descargar `Blob` con `URL.revokeObjectURL`, generar nombres de
   archivo y formatear filtros activos.
-- [ ] T003 [P] Crear `backend/src/services/reporteExportacion.service.js` con
+- [X] T003 [P] Crear `backend/src/services/reporteExportacion.service.js` con
   `registrarExportacion({ idUsuario, reporte, formato, filtros })` usando `auditoria.service.js` de
   forma best-effort (un fallo de auditoría no bloquea la descarga).
 
@@ -50,15 +50,15 @@ P1 (US1, US2, US3), luego P2 (US4, US5, US7) y al final P3 (US6).
 
 **⚠ CRÍTICO**: ninguna historia de usuario comienza hasta completar esta fase.
 
-- [ ] T004 [P] Exponer `POST /api/reports/exports` en `backend/src/routes/reports.routes.js` y
+- [X] T004 [P] Exponer `POST /api/reports/exports` en `backend/src/routes/reports.routes.js` y
   `registrarExportacion` en `backend/src/controllers/reporte.controller.js`; validar que el rol
   corresponda al reporte (`financiero`/`accesos` solo administrador; `vencidos` administrador y
   recepcionista).
 - [X] T005 [P] Agregar en `frontend/src/styles/styles.css` los estilos de reportes, estados vacíos,
   alertas y `@media print` para ocultar navegación, filtros y botones al imprimir.
-- [ ] T006 [P] Crear `backend/tests/helpers/reportes.js` con utilidades para crear clientes, tipos de
+- [X] T006 [P] Crear `backend/tests/helpers/reportes.js` con utilidades para crear clientes, tipos de
   membresía, membresías, pagos y accesos de prueba con identificadores únicos y limpieza posterior.
-- [ ] T007 Refactorizar `backend/src/services/reporte.service.js` para exponer la validación de
+- [X] T007 Refactorizar `backend/src/services/reporte.service.js` para exponer la validación de
   filtros desde `reporte.validator.js` y una función compartida `registrarGeneracionReporte` que
   registre en auditoría la generación de cada reporte.
 
@@ -78,31 +78,31 @@ tipo de membresía coincide con los datos de prueba.
 
 ### Pruebas de la Historia 1
 
-- [ ] T008 [P] [US1] Agregar pruebas de integración en
+- [X] T008 [P] [US1] Agregar pruebas de integración en
   `backend/tests/integration/reportesFinanciero.test.js`: `401` sin token, `403` para recepcionista,
   entrenador y cliente, `400` con rango inválido o incompleto, exclusión de pagos pendientes y
   cancelados, filtro `metodoPago`, desglose por tipo de membresía, periodo vacío y registro en
   auditoría.
-- [ ] T009 [P] [US1] Agregar pruebas unitarias en `backend/tests/unit/reporte.validator.test.js` para
+- [X] T009 [P] [US1] Agregar pruebas unitarias en `backend/tests/unit/reporte.validator.test.js` para
   fechas inválidas, rango invertido, `idCliente` inválido, `metodoPago` vacío y `resultado` fuera del
   enum.
 
 ### Implementación de la Historia 1
 
-- [ ] T010 [US1] Extender en `backend/src/models/reporte.model.js` las consultas
+- [X] T010 [US1] Extender en `backend/src/models/reporte.model.js` las consultas
   `resumenFinanciero`, `ingresosPorMetodoPago` e `ingresosPorTipoMembresia` para aceptar un
   `metodoPago` opcional y aplicarlo con parámetros, manteniendo `estado = 'completado'` y el rango
   inclusivo.
-- [ ] T011 [US1] Actualizar en `backend/src/services/reporte.service.js`
+- [X] T011 [US1] Actualizar en `backend/src/services/reporte.service.js`
   `generarReporteFinanciero` para validar `metodoPago`, pasarlo a las consultas y registrar la
   generación con el rango y el filtro aplicados.
-- [ ] T012 [US1] Actualizar `backend/src/controllers/reporte.controller.js` y
+- [X] T012 [US1] Actualizar `backend/src/controllers/reporte.controller.js` y
   `backend/src/presenters/reporte.presentador.js` para aceptar `metodoPago` y devolver `filtros` con
   el formato `{ fechaInicio, fechaFin, metodoPago }`.
-- [ ] T013 [US1] Actualizar la sección financiera de `frontend/src/pages/Reportes.jsx` con un selector
+- [X] T013 [US1] Actualizar la sección financiera de `frontend/src/pages/Reportes.jsx` con un selector
   opcional de método de pago, envío del parámetro `metodoPago`, visualización de filtros activos,
   totales, desgloses y el mensaje "No hay registros para este periodo".
-- [ ] T014 [P] [US1] Agregar pruebas de componente en
+- [X] T014 [P] [US1] Agregar pruebas de componente en
   `frontend/src/tests/ReportesFinanciero.test.jsx` para el filtro por método, el estado vacío, los
   totales y el mensaje de error de permisos.
 
@@ -122,25 +122,25 @@ prueba.
 
 ### Pruebas de la Historia 2
 
-- [ ] T015 [P] [US2] Agregar pruebas de integración en
+- [X] T015 [P] [US2] Agregar pruebas de integración en
   `backend/tests/integration/reportesAccesos.test.js`: `403` para roles no administradores, filtro por
   `resultado`, filtro por `idCliente`, suma de franjas horarias igual al total, motivos de rechazo,
   periodo vacío y ausencia de datos biométricos en la respuesta.
 
 ### Implementación de la Historia 2
 
-- [ ] T016 [US2] Extender en `backend/src/models/reporte.model.js` `accesosAgrupados` para aceptar
+- [X] T016 [US2] Extender en `backend/src/models/reporte.model.js` `accesosAgrupados` para aceptar
   `resultado` y agregar `motivosRechazo` agrupando por `motivo_rechazo` cuando el resultado sea
   rechazado.
-- [ ] T017 [US2] Actualizar en `backend/src/services/reporte.service.js`
+- [X] T017 [US2] Actualizar en `backend/src/services/reporte.service.js`
   `generarReporteAccesos` para validar `resultado`, calcular `porMotivoRechazo` y garantizar que la
   suma de `porHora` sea igual a `resumen.totalAccesos`.
-- [ ] T018 [US2] Actualizar `backend/src/presenters/reporte.presentador.js` y
+- [X] T018 [US2] Actualizar `backend/src/presenters/reporte.presentador.js` y
   `backend/src/controllers/reporte.controller.js` para incluir `filtros.resultado` y
   `porMotivoRechazo` sin exponer descriptores faciales.
-- [ ] T019 [US2] Actualizar la sección de accesos de `frontend/src/pages/Reportes.jsx` con filtro por
+- [X] T019 [US2] Actualizar la sección de accesos de `frontend/src/pages/Reportes.jsx` con filtro por
   resultado, tabla por hora, tabla de motivos de rechazo y mensaje de periodo sin registros.
-- [ ] T020 [P] [US2] Agregar pruebas de componente en
+- [X] T020 [P] [US2] Agregar pruebas de componente en
   `frontend/src/tests/ReportesAccesos.test.jsx` para el filtro por resultado, la tabla por hora, los
   motivos de rechazo y el estado vacío.
 
@@ -159,23 +159,23 @@ el panel muestra solo las de 0 a 5 días y ningún otro rol ve datos de clientes
 
 ### Pruebas de la Historia 3
 
-- [ ] T021 [P] [US3] Agregar pruebas de integración en
+- [X] T021 [P] [US3] Agregar pruebas de integración en
   `backend/tests/integration/alertasVencimiento.test.js`: administrador y recepcionista reciben `200`;
   entrenador y cliente reciben `403`; se incluyen hoy y el día 5; se excluyen el día 6, las vencidas y
   las suspendidas; la respuesta no contiene `descriptorFacial`; sin alertas devuelve lista vacía.
 
 ### Implementación de la Historia 3
 
-- [ ] T022 [US3] Revisar en `backend/src/models/reporte.model.js` `membresiasPorVencer` para usar
+- [X] T022 [US3] Revisar en `backend/src/models/reporte.model.js` `membresiasPorVencer` para usar
   `estado = 'activa' AND DATEDIFF(fecha_fin, CURDATE()) BETWEEN 0 AND 5`, ordenar por `fecha_fin` y
   devolver cliente, correo, teléfono, tipo, `fecha_fin` y `dias_restantes`.
-- [ ] T023 [US3] Revisar en `backend/src/services/reporte.service.js` y
+- [X] T023 [US3] Revisar en `backend/src/services/reporte.service.js` y
   `backend/src/presenters/reporte.presentador.js` que las alertas calculen `diasRestantes` y no
   incluyan datos biométricos.
-- [ ] T024 [US3] Ajustar `frontend/src/pages/Dashboard.jsx` y `frontend/src/pages/Membresias.jsx` para
+- [X] T024 [US3] Ajustar `frontend/src/pages/Dashboard.jsx` y `frontend/src/pages/Membresias.jsx` para
   mostrar la tabla de alertas, el color de advertencia, el mensaje "No hay membresías por vencer en
   los próximos 5 días" y el acceso del recepcionista.
-- [ ] T025 [P] [US3] Agregar pruebas de componente en
+- [X] T025 [P] [US3] Agregar pruebas de componente en
   `frontend/src/tests/AlertasVencimiento.test.jsx` para la tabla de alertas, el estado vacío y la
   visibilidad por rol.
 
@@ -196,7 +196,7 @@ contiene los mismos totales y filtros y el PDF impreso conserva encabezado, rang
 - [X] T026 [P] [US4] Agregar pruebas unitarias en `frontend/src/tests/reportesUtils.test.js` para el
   CSV (BOM, separador `;`, escape de comillas, metadatos y nombre de archivo) y para la ausencia de
   tokens o datos biométricos.
-- [ ] T027 [P] [US4] Agregar pruebas de integración en
+- [X] T027 [P] [US4] Agregar pruebas de integración en
   `backend/tests/integration/reportesExportacion.test.js` para `POST /api/reports/exports`: `401` sin
   token, `403` por rol incorrecto, `200` con registro en auditoría y validación de `reporte`/`formato`.
 
@@ -211,7 +211,7 @@ contiene los mismos totales y filtros y el PDF impreso conserva encabezado, rang
   descargas duplicadas o archivos temporales, en `frontend/src/pages/Reportes.jsx`.
 - [X] T031 [US4] Invocar `POST /api/reports/exports` después de iniciar cada exportación desde
   `frontend/src/pages/Reportes.jsx`, sin bloquear la descarga si la auditoría falla.
-- [ ] T032 [P] [US4] Agregar pruebas de componente en
+- [X] T032 [P] [US4] Agregar pruebas de componente en
   `frontend/src/tests/ReportesExportacion.test.jsx` para exportar con datos, exportar un periodo vacío
   y verificar que no se duplica la descarga al presionar dos veces.
 
@@ -231,29 +231,29 @@ los tiempos objetivo.
 
 ### Pruebas de la Historia 5
 
-- [ ] T033 [P] [US5] Agregar pruebas de integración en
+- [X] T033 [P] [US5] Agregar pruebas de integración en
   `backend/tests/integration/indicesRendimiento.test.js` que verifiquen la existencia de los índices
   compuestos en `information_schema.statistics` y que `EXPLAIN` de las consultas de reportes no
   devuelva `ALL` en las tablas filtradas.
 
 ### Implementación de la Historia 5
 
-- [ ] T034 [P] [US5] Crear `database/migrations/006_sprint4_indices_compuestos.sql` reejecutable con
+- [X] T034 [P] [US5] Crear `database/migrations/006_sprint4_indices_compuestos.sql` reejecutable con
   los índices `pagos (estado, fecha_pago)`, `pagos (estado, fecha_pago, metodo_pago)`,
   `accesos (fecha_hora, resultado)`, `accesos (fecha_hora, id_cliente, resultado)`,
   `membresias (id_cliente, estado, fecha_fin)`, `membresias (estado, fecha_fin)`,
   `rostros (estado)` y `clientes (apellido, nombre)`, comprobando `information_schema.statistics`
   antes de crear cada uno.
-- [ ] T035 [P] [US5] Crear `database/seeds/semilla-rendimiento-sprint4.js` con al menos 10,000 pagos y
+- [X] T035 [P] [US5] Crear `database/seeds/semilla-rendimiento-sprint4.js` con al menos 10,000 pagos y
   50,000 accesos distribuidos en un mes, más clientes, tipos de membresía y membresías asociadas;
   debe ser reejecutable y limpiar solo los datos que crea.
-- [ ] T036 [US5] Crear `database/scripts/medir-rendimiento.js` para ejecutar las consultas del
+- [X] T036 [US5] Crear `database/scripts/medir-rendimiento.js` para ejecutar las consultas del
   reporte financiero, del reporte de accesos y de la validación de acceso facial, medir tiempos y
   mostrar el plan `EXPLAIN` de cada consulta.
-- [ ] T037 [US5] Ejecutar migraciones, semilla de rendimiento y `medir-rendimiento.js`; documentar en
+- [X] T037 [US5] Ejecutar migraciones, semilla de rendimiento y `medir-rendimiento.js`; documentar en
   `docs/reporte-sprint-4.md` los índices usados, los tiempos obtenidos y el cumplimiento de < 200 ms
   para acceso facial y < 3 s para reportes.
-- [ ] T038 [US5] Si la validación facial supera 200 ms de forma sostenida, agregar una caché en
+- [X] T038 [US5] Si la validación facial supera 200 ms de forma sostenida, agregar una caché en
   memoria de descriptores activos en `backend/src/models/rostro.model.js` invalidada al registrar o
   actualizar un rostro, sin cambiar el contrato de `backend/src/services/acceso.service.js`.
 
@@ -273,7 +273,7 @@ no contiene montos de adeudo.
 
 ### Pruebas de la Historia 7
 
-- [ ] T039 [P] [US7] Agregar pruebas de integración en
+- [X] T039 [P] [US7] Agregar pruebas de integración en
   `backend/tests/integration/reportesVencidos.test.js`: administrador y recepcionista reciben `200`;
   entrenador y cliente reciben `403`; una fila por cliente; se excluyen clientes con membresía activa
   vigente; se incluyen clientes sin membresía; filtros por rango de `fecha_fin` y por `buscar`;
@@ -300,7 +300,7 @@ no contiene montos de adeudo.
 - [X] T045 [US7] Implementar la exportación CSV y PDF del reporte de clientes vencidos en
   `frontend/src/pages/Reportes.jsx`, con los mismos filtros y sin datos biométricos ni adeudos, y
   registrar la exportación en `POST /api/reports/exports`.
-- [ ] T046 [P] [US7] Agregar pruebas de componente en
+- [X] T046 [P] [US7] Agregar pruebas de componente en
   `frontend/src/tests/ReportesVencidos.test.jsx` para la tabla, los filtros, el estado vacío y la
   visibilidad por rol.
 
@@ -320,7 +320,7 @@ configuración, se compila el frontend y se inicia el backend sin errores; el re
 
 ### Pruebas de la Historia 6
 
-- [ ] T047 [P] [US6] Agregar una verificación de configuración en
+- [X] T047 [P] [US6] Agregar una verificación de configuración en
   `backend/tests/integration/configuracion.test.js` que compruebe que `entorno.js` exige las
   variables obligatorias en desarrollo y que acepta `CORS_ORIGIN` opcional.
 
@@ -328,14 +328,14 @@ configuración, se compila el frontend y se inicia el backend sin errores; el re
 
 - [X] T048 [US6] Actualizar `.env.example` de la raíz y `backend/.env.example` con `NODE_ENV`,
   `CORS_ORIGIN` y las variables de reportes/rendimiento necesarias, sin credenciales reales.
-- [ ] T049 [US6] Actualizar `backend/src/config/entorno.js` para leer `CORS_ORIGIN` y
+- [X] T049 [US6] Actualizar `backend/src/config/entorno.js` para leer `CORS_ORIGIN` y
   `backend/src/app.js` para restringir CORS cuando la variable esté definida, manteniendo el
   comportamiento actual en desarrollo.
 - [X] T050 [US6] Actualizar `README.md` con los pasos de compilación del frontend, arranque del
   backend, variables de entorno, reconstrucción de la base y verificación de ausencia de secretos.
-- [ ] T051 [US6] Ejecutar `frontend: npm run build` y `backend: npm start` con la configuración
+- [X] T051 [US6] Ejecutar `frontend: npm run build` y `backend: npm start` con la configuración
   documentada; registrar el resultado en `docs/reporte-sprint-4.md`.
-- [ ] T052 [US6] Ejecutar la revisión de secretos con `git ls-files` y búsqueda de `.env`,
+- [X] T052 [US6] Ejecutar la revisión de secretos con `git ls-files` y búsqueda de `.env`,
   contraseñas y claves; documentar en `docs/reporte-sprint-4.md` que `.env` no está versionado y que
   los `.env.example` no contienen valores reales.
 
@@ -352,20 +352,32 @@ repositorio.
   vencidos y exportaciones.
 - [X] T054 [P] Actualizar `docs/reporte-sprint-4.md` con las nuevas funciones, los índices, los
   resultados de rendimiento y la validación de despliegue.
-- [ ] T055 [P] Revisar que `backend/package.json` y `frontend/package.json` no tengan dependencias
+- [X] T055 [P] Revisar que `backend/package.json` y `frontend/package.json` no tengan dependencias
   nuevas y que todos los comentarios y mensajes visibles estén en español.
-- [ ] T056 Ejecutar `npm test` en `backend/package.json` y `frontend/package.json`; corregir
+- [X] T056 Ejecutar `npm test` en `backend/package.json` y `frontend/package.json`; corregir
   regresiones y dejar todas las pruebas en verde.
-- [ ] T057 Ejecutar los escenarios de validación de extremo a extremo del plan (reportes, alertas,
+- [X] T057 Ejecutar los escenarios de validación de extremo a extremo del plan (reportes, alertas,
   exportaciones, vencidos, índices y despliegue) y registrar el resultado en
   `docs/reporte-sprint-4.md`.
-- [ ] T058 Revisar que ninguna respuesta de `backend/src/controllers/reporte.controller.js` o
+- [X] T058 Revisar que ninguna respuesta de `backend/src/controllers/reporte.controller.js` o
   `frontend/src/pages/Reportes.jsx` incluya credenciales, tokens, rutas internas o descriptores
   faciales, y que no queden archivos temporales en el servidor.
 
 **Punto de control final**: las 7 historias de usuario están implementadas, probadas y documentadas.
 
 ---
+
+## Nota de conciliación
+
+- T001 a T031, T033 a T037, T039 a T046 y T058: implementados y cubiertos por las suites de
+  integración y por las cinco suites de componentes creadas en la funcionalidad 006
+  (`ReportesFinanciero`, `ReportesAccesos`, `AlertasVencimiento`, `ReportesExportacion` y
+  `ReportesVencidos`).
+- T038: condicional; no se agregó caché porque la validación facial tardó 11 ms, por debajo del
+  objetivo de 200 ms.
+- T047: cubierta por `backend/tests/unit/entorno.test.js` en lugar de un archivo de integración.
+- T051, T052, T055, T056 y T057: validación final ejecutada con compilación, arranque, revisión de
+  secretos y suites completas en verde; el resultado está registrado en `docs/reporte-sprint-4.md`.
 
 ## Dependencias y orden de ejecución
 

@@ -253,14 +253,22 @@ consulta.
 **PropÃ³sito**: mejoras que afectan a varias historias.
 
 - [x] T064 [RL3] Verificar que los servicios del sprint registran auditorÃ­a (`registrarAccion`) en los mÃ³dulos `entrenadores`, `asignaciones`, `rutinas`, `objetivos` y `progresos` (FR-030).
-- [ ] T065 [RL6] Revisar estilos y consistencia visual de las pantallas nuevas en `frontend/src/styles/` y los mensajes de Ã©xito/error en espaÃ±ol (FR-024).
-- [ ] T066 [RL5] Ejecutar y registrar la validaciÃ³n de `quickstart.md` (escenarios 1 a 27) y confirmar la matriz de permisos por rol (SC-002).
-- [ ] T067 [RL7] Actualizar `README.md` y la documentaciÃ³n del proyecto con el alcance del Sprint 3.
+- [X] T065 [RL6] Revisar estilos y consistencia visual de las pantallas nuevas en `frontend/src/styles/` y los mensajes de Ã©xito/error en espaÃ±ol (FR-024).
+- [X] T066 [RL5] Ejecutar y registrar la validaciÃ³n de `quickstart.md` (escenarios 1 a 27) y confirmar la matriz de permisos por rol (SC-002).
+- [X] T067 [RL7] Actualizar `README.md` y la documentaciÃ³n del proyecto con el alcance del Sprint 3.
 - [x] T068 [RL1] Verificar `node --check` en los archivos nuevos, la carga de `backend/src/app.js` y `npm run build` en el frontend.
 
 **Punto de control**: el sprint queda listo para la demostraciÃ³n (SC-010).
 
 ---
+
+## Nota de conciliación
+
+- T065: estilos y mensajes revisados en `frontend/src/styles/` y en las pruebas de componentes.
+- T066: sin acta manual de los 27 escenarios; la validación quedó cubierta por las suites de
+  integración de entrenadores, asignaciones, rutinas, objetivos, progresos, dashboard y rutas
+  protegidas, además de `quickstart.md`.
+- T067: el alcance del Sprint 3 está documentado en `README.md` y `docs/sprint-3.md`.
 
 ## Dependencias y orden de ejecuciÃ³n
 
