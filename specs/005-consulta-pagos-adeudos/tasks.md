@@ -148,7 +148,7 @@ recibe `403`.
 
 **Propósito**: verificación final, rendimiento, documentación y seguridad.
 
-- [ ] T033 [P] Ejecutar `npm test` en `backend/` y `frontend/`, corregir fallos y confirmar que no hay regresiones en `pagosRegistro.test.js` ni en las pruebas del Sprint 4. Ejecutar solo después de completar T003-T032.
+- [X] T033 [P] Ejecutar `npm test` en `backend/` y `frontend/`, corregir fallos y confirmar que no hay regresiones en `pagosRegistro.test.js` ni en las pruebas del Sprint 4. Ejecutar solo después de completar T003-T032.
 - [ ] T034 [P] Verificar con `EXPLAIN` y la semilla de `database/seeds/semilla-rendimiento-sprint4.js` que las consultas usan `ix_pagos_cliente`, `idx_fecha_pago` o `idx_pagos_estado_fecha`, siguiendo `specs/005-consulta-pagos-adeudos/quickstart.md`.
 - [ ] T035 [P] Confirmar que no se modificaron `backend/package.json`, `frontend/package.json` ni `database/migrations/`, y que no hay secretos en `backend/.env.example` ni en el código nuevo.
 - [ ] T036 Revisar en `backend/src/utils/errores.js` y en `frontend/src/pages/PagosHistorial.jsx`, `MisPagos.jsx`, `Adeudos.jsx` y `MisAdeudos.jsx` que todos los mensajes de usuario están en español y no exponen información interna.

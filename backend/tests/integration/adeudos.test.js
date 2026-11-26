@@ -15,10 +15,10 @@ let tokenRecepcionista = '';
 let tokenEntrenador = '';
 
 async function crearCliente() {
-  const correo = `adeudo.cliente.${randomUUID()}@pruebas.local`;
+  const correo = `saldo.cliente.${randomUUID()}@pruebas.local`;
   const resultado = await ejecutar(
     'INSERT INTO clientes (nombre, apellido, correo, estado) VALUES (?, ?, ?, ?);',
-    ['Cliente', 'Adeudo', correo, 'activo']
+    ['Cliente', 'Saldo', correo, 'activo']
   );
   idsClientes.push(resultado.insertId);
   return { id: resultado.insertId, correo };
@@ -92,7 +92,7 @@ describe('Consulta general de adeudos', () => {
     expect(respuesta.body.adeudos[0].cliente).toEqual({
       id: clienteUno.id,
       nombre: 'Cliente',
-      apellido: 'Adeudo',
+      apellido: 'Saldo',
       correo: clienteUno.correo,
     });
     expect(respuesta.body.adeudos[0].pagos).toHaveLength(2);
@@ -156,7 +156,7 @@ describe('Consulta general de adeudos', () => {
   });
 
   it('exige token y deniega a cliente y entrenador', async () => {
-    const tokenCliente = (await crearUsuario(`adeudo.cliente.${randomUUID()}@pruebas.local`)).token;
+    const tokenCliente = (await crearUsuario(`saldo.cliente.${randomUUID()}@pruebas.local`)).token;
     const sinToken = await consultarAdeudos('');
     const comoCliente = await consultarAdeudos(tokenCliente);
     const comoEntrenador = await consultarAdeudos(tokenEntrenador);
@@ -216,7 +216,7 @@ describe('Consulta de adeudos propios', () => {
   });
 
   it('exige token, deniega a entrenador y responde 404 sin cliente asociado', async () => {
-    const sinCliente = await crearUsuario(`adeudo.sincliente.${randomUUID()}@pruebas.local`);
+    const sinCliente = await crearUsuario(`saldo.sincliente.${randomUUID()}@pruebas.local`);
     const sinToken = await consultarAdeudosPropios('');
     const comoEntrenador = await consultarAdeudosPropios(tokenEntrenador);
     const sinClienteAsociado = await consultarAdeudosPropios(sinCliente.token);
