@@ -468,10 +468,10 @@ autorizadas y rechazadas con su motivo (spec.md, HU9).
   directo a MySQL (FR-035, SC-009) [RL5]
 - [X] T082 [P] Verificar que ningún endpoint devuelve `descriptorFacial` revisando controladores y
   presentadores del backend (FR-020, SC-004) [RL5]
-- [ ] T083 Reconstruir la base de datos desde cero: borrarla y reejecutar
+- [X] T083 Reconstruir la base de datos desde cero: borrarla y reejecutar
   `node database/scripts/aplicar-migraciones.js` para confirmar SC-007 [RL1]
-  **Pendiente de entorno**: el usuario MySQL configurado no puede crear bases. No se borró ni
-  modificó la base de trabajo; las migraciones `001` a `006` sí están aplicadas y registradas.
+  Ejecutada el 2026-11-26: respaldo previo con `mysqldump`, base recreada por root y migraciones
+  `001` a `006` aplicadas sobre la base vacía; la reejecución omite las ya aplicadas.
 - [X] T084 Ejecutar la suite completa de pruebas (`backend: npm test` y `frontend: npm test`) y
   corregir cualquier fallo antes de cerrar el sprint (principio X) [RL5]
 - [X] T085 Ejecutar el flujo de demostración completo de `quickstart.md` §6 en menos de 5 minutos
@@ -501,8 +501,9 @@ implementación. Criterios aplicados:
   `database/README.md` y `docs/reporte-sprint-4.md`.
 - T085: demostración de siete pasos ejecutada por API en 0,17 s, con datos únicos y sin cámara
   física (descriptor sintético equivalente al del navegador).
-- T083: continúa pendiente por falta de permisos de creación de bases en el usuario MySQL
-  configurado. No se borró ni modificó la base de trabajo.
+- T083: base reconstruida desde cero el 2026-11-26 (root eliminó y recreó `gymaccess`); las
+  seis migraciones y la semilla del administrador se aplicaron sin errores y las suites de
+  backend (225 pruebas) y frontend (93 pruebas) pasaron sobre la base nueva.
 
 ## Dependencias y orden de ejecución
 
