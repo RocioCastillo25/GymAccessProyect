@@ -197,6 +197,9 @@ async function main() {
       accesos
     );
 
+    // Actualiza las estadísticas para que EXPLAIN elija los índices apenas termine la carga.
+    await conexion.query('ANALYZE TABLE pagos;');
+
     console.log(
       `[rendimiento] Listo: ${TOTAL_CLIENTES} clientes, ${membresias.length} membresías, ${pagos.length} pagos y ${accesos.length} accesos.`
     );
