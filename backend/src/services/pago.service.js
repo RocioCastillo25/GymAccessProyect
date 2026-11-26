@@ -4,7 +4,12 @@ import * as pagoModelo from '../models/pago.model.js';
 import * as clienteModelo from '../models/cliente.model.js';
 import * as membresiaModelo from '../models/membresia.model.js';
 import { validarPago } from '../validators/pago.validator.js';
-import { validarConsultaPagos } from '../validators/pagoConsulta.validator.js';
+import {
+  validarConsultaPagos,
+  validarConsultaAdeudos,
+} from '../validators/pagoConsulta.validator.js';
+import { presentarClienteResumen } from '../presenters/cliente.presentador.js';
+import { presentarListaPagos } from '../presenters/pago.presentador.js';
 import { errorValidacion, errorDuplicado, errorNoEncontrado } from '../utils/errores.js';
 import { registrarAccion } from './auditoria.service.js';
 import { obtenerClientePorCorreo } from './cliente.service.js';
@@ -134,6 +139,80 @@ export async function listarPagosPropios(correo, query = {}) {
   };
   if (pagos.length === 0) {
     respuesta.mensaje = 'No hay pagos para los filtros seleccionados.';
+  }
+  return respuesta;
+}
+
+/**
+ * Devuelve los adeudos agrupados por cliente (005-FR-009, 005-FR-011, 005-FR-012).
+ * Solo cuentan los pagos `pendiente`; el total general es la cantidad de
+ * clientes con adeudo, sin aplicar paginación a los grupos.
+ * @param {Object} query - Parámetros de la cadena de consulta.
+ * @returns {Promise<{adeudos: Array, total: number, limite: number, offset: number, mensaje?: string}>}
+ */
+export async function obtenerAdeudos(query = {}) {
+  const { errores, valores } = validarConsultaAdeudos(query);
+  if (errores.length > 0) {
+    throw errorValidacion('Revise los filtros enviados.', errores);
+  }
+
+  const [total, clientes] = await Promise.all([
+    pagoModelo.contarClientesConAdeudos(valores),
+    pagoModelo.listarClientesConAdeudos(valores),
+  ]);
+
+  const idsClientes = clientes.map((cliente) => cliente.id_cliente);
+  const pagosPendientes = await pagoModelo.listarPendientesPorClientes(idsClientes);
+  const pagosPorCliente = new Map();
+  for (const pago of pagosPendientes) {
+    if (!pagosPorCliente.has(pago.id_cliente)) pagosPorCliente.set(pago.id_cliente, []);
+    pagosPorCliente.get(pago.id_cliente).push(pago);
+  }
+
+  const adeudos = clientes.map((cliente) => ({
+    cliente: presentarClienteResumen(cliente),
+    totalAdeudado: Number(Number(cliente.total_adeudado).toFixed(2)),
+    pagos: presentarListaPagos(pagosPorCliente.get(cliente.id_cliente) ?? []),
+  }));
+
+  const respuesta = {
+    adeudos,
+    total,
+    limite: valores.limite,
+    offset: valores.offset,
+  };
+  if (adeudos.length === 0) {
+    respuesta.mensaje = 'No hay adeudos registrados.';
+  }
+  return respuesta;
+}
+
+/**
+ * Devuelve el adeudo del cliente resuelto por el correo del JWT (005-FR-010).
+ * Cualquier `idCliente` de la petición se ignora: ni valida ni sustituye al
+ * cliente de la sesión (005-FR-013).
+ * @param {string} correo - Correo del usuario autenticado.
+ * @param {Object} query - Parámetros de la cadena de consulta.
+ * @returns {Promise<{cliente: Object, totalAdeudado: number, pagos: Array, mensaje?: string}>}
+ */
+export async function obtenerAdeudosPropios(correo, query = {}) {
+  const cliente = await obtenerClientePorCorreo(correo);
+  const { idCliente, ...filtrosSinCliente } = query;
+  const { errores } = validarConsultaAdeudos(filtrosSinCliente);
+  if (errores.length > 0) {
+    throw errorValidacion('Revise los filtros enviados.', errores);
+  }
+
+  const pagos = await pagoModelo.listarPendientesPorClientes([cliente.id_cliente]);
+  const totalAdeudado = pagos.reduce((suma, pago) => suma + Number(pago.monto), 0);
+
+  const respuesta = {
+    cliente: presentarClienteResumen(cliente),
+    totalAdeudado: Number(totalAdeudado.toFixed(2)),
+    pagos: presentarListaPagos(pagos),
+  };
+  if (pagos.length === 0) {
+    respuesta.mensaje = 'No hay adeudos registrados.';
   }
   return respuesta;
 }

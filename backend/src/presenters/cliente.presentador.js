@@ -28,6 +28,22 @@ export function presentarCliente(cliente) {
 }
 
 /**
+ * Devuelve el resumen de cliente permitido en los adeudos (contracts/api-rest.md §6).
+ * Excluye teléfono, dirección y fecha de registro.
+ * @param {Object} cliente - Fila de `clientes` o del JOIN de adeudos.
+ * @returns {{id: number, nombre: string, apellido: string, correo: string}|null}
+ */
+export function presentarClienteResumen(cliente) {
+  if (!cliente) return null;
+  return {
+    id: cliente.id_cliente,
+    nombre: cliente.nombre,
+    apellido: cliente.apellido,
+    correo: cliente.correo,
+  };
+}
+
+/**
  * @param {Array} clientes - Filas de la tabla clientes.
  * @returns {Array} Lista en formato de la API.
  */

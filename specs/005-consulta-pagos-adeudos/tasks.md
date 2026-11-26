@@ -124,21 +124,21 @@ recibe `403`.
 
 > **Nota**: escribir primero estas pruebas y comprobar que fallan antes de la implementación.
 
-- [ ] T021 [P] [US3] Crear `backend/tests/integration/adeudos.test.js` con `supertest` para cubrir suma de pagos `pendiente`, exclusión de `completado` y `cancelado`, agrupación por cliente, filtro `idCliente`, paginación de grupos, mensaje "No hay adeudos registrados.", permisos de administrador, recepcionista, cliente y entrenador, `401` sin token y `404` para cliente sin cliente asociado.
-- [ ] T022 [P] [US3] Crear `frontend/src/tests/Adeudos.test.jsx` con React Testing Library y `frontend/src/tests/servidorFalso.js` para verificar agrupación por cliente, total adeudado, detalle de pagos y estado vacío.
-- [ ] T023 [P] [US3] Crear `frontend/src/tests/MisAdeudos.test.jsx` con React Testing Library y `frontend/src/tests/servidorFalso.js` para verificar el total propio, el detalle de pagos pendientes y el estado vacío.
+- [X] T021 [P] [US3] Crear `backend/tests/integration/adeudos.test.js` con `supertest` para cubrir suma de pagos `pendiente`, exclusión de `completado` y `cancelado`, agrupación por cliente, filtro `idCliente`, paginación de grupos, mensaje "No hay adeudos registrados.", permisos de administrador, recepcionista, cliente y entrenador, `401` sin token y `404` para cliente sin cliente asociado.
+- [X] T022 [P] [US3] Crear `frontend/src/tests/Adeudos.test.jsx` con React Testing Library y `frontend/src/tests/servidorFalso.js` para verificar agrupación por cliente, total adeudado, detalle de pagos y estado vacío.
+- [X] T023 [P] [US3] Crear `frontend/src/tests/MisAdeudos.test.jsx` con React Testing Library y `frontend/src/tests/servidorFalso.js` para verificar el total propio, el detalle de pagos pendientes y el estado vacío.
 
 ### Implementación de la historia de usuario 3
 
-- [ ] T024 [P] [US3] Ampliar `backend/src/validators/pagoConsulta.validator.js` con `validarConsultaAdeudos(query)` para `idCliente` entero positivo, "`limite`: entero de 1 a 200" y "`offset`: entero ≥ 0".
-- [ ] T025 [P] [US3] Agregar `presentarClienteResumen(cliente)` en `backend/src/presenters/cliente.presentador.js` devolviendo solo `{ id, nombre, apellido, correo }`, sin teléfono, dirección ni fecha de registro.
-- [ ] T026 [P] [US3] Ampliar `backend/src/models/pago.model.js` con `contarClientesConAdeudos(filtros)`, `listarClientesConAdeudos(filtros)` y `listarPendientesPorClientes(idsClientes)`, filtrando `estado = 'pendiente'` y ordenando "`fecha_pago DESC, id_pago DESC`".
-- [ ] T027 [US3] Implementar `obtenerAdeudos(query)` y `obtenerAdeudosPropios(correo)` en `backend/src/services/pago.service.js`: validar con `validarConsultaAdeudos`, aplicar FR-011 con `COALESCE(SUM(monto), 0)` solo sobre pagos `pendiente`, resolver el cliente propio con `obtenerClientePorCorreo`, devolver `{ adeudos, total, limite, offset }` o `{ cliente, totalAdeudado, pagos }` y agregar "No hay adeudos registrados." cuando corresponda.
-- [ ] T028 [US3] Implementar `listarAdeudos` y `listarAdeudosPropios` en `backend/src/controllers/pago.controller.js`, presentando los pagos con `presentarListaPagos` y el cliente con `presentarClienteResumen`.
-- [ ] T029 [US3] Registrar `GET /api/pagos/adeudos` con `autorizar('administrador', 'recepcionista')` y `GET /api/pagos/adeudos/mios` con `autorizar('cliente')` en `backend/src/routes/pago.routes.js`, declarando `/adeudos/mios` antes de `/adeudos`.
-- [ ] T030 [P] [US3] Crear `frontend/src/pages/Adeudos.jsx` con filtro por cliente, tabla agrupada, total adeudado, detalle de pagos, paginación y mensaje vacío, usando `pedir` de `frontend/src/services/api.js`.
-- [ ] T031 [P] [US3] Crear `frontend/src/pages/MisAdeudos.jsx` con total adeudado, detalle de pagos pendientes y mensaje vacío, usando `pedir` de `frontend/src/services/api.js`.
-- [ ] T032 [US3] Registrar las vistas `Adeudos` en `/payments/adeudos` para `administrador` y `recepcionista`, y `MisAdeudos` en `/me/payments/adeudos` para `cliente`, en `frontend/src/App.jsx`.
+- [X] T024 [P] [US3] Ampliar `backend/src/validators/pagoConsulta.validator.js` con `validarConsultaAdeudos(query)` para `idCliente` entero positivo, "`limite`: entero de 1 a 200" y "`offset`: entero ≥ 0".
+- [X] T025 [P] [US3] Agregar `presentarClienteResumen(cliente)` en `backend/src/presenters/cliente.presentador.js` devolviendo solo `{ id, nombre, apellido, correo }`, sin teléfono, dirección ni fecha de registro.
+- [X] T026 [P] [US3] Ampliar `backend/src/models/pago.model.js` con `contarClientesConAdeudos(filtros)`, `listarClientesConAdeudos(filtros)` y `listarPendientesPorClientes(idsClientes)`, filtrando `estado = 'pendiente'` y ordenando "`fecha_pago DESC, id_pago DESC`".
+- [X] T027 [US3] Implementar `obtenerAdeudos(query)` y `obtenerAdeudosPropios(correo)` en `backend/src/services/pago.service.js`: validar con `validarConsultaAdeudos`, aplicar FR-011 con `COALESCE(SUM(monto), 0)` solo sobre pagos `pendiente`, resolver el cliente propio con `obtenerClientePorCorreo`, devolver `{ adeudos, total, limite, offset }` o `{ cliente, totalAdeudado, pagos }` y agregar "No hay adeudos registrados." cuando corresponda.
+- [X] T028 [US3] Implementar `listarAdeudos` y `listarAdeudosPropios` en `backend/src/controllers/pago.controller.js`, presentando los pagos con `presentarListaPagos` y el cliente con `presentarClienteResumen`.
+- [X] T029 [US3] Registrar `GET /api/pagos/adeudos` con `autorizar('administrador', 'recepcionista')` y `GET /api/pagos/adeudos/mios` con `autorizar('cliente')` en `backend/src/routes/pago.routes.js`, declarando `/adeudos/mios` antes de `/adeudos`.
+- [X] T030 [P] [US3] Crear `frontend/src/pages/Adeudos.jsx` con filtro por cliente, tabla agrupada, total adeudado, detalle de pagos, paginación y mensaje vacío, usando `pedir` de `frontend/src/services/api.js`.
+- [X] T031 [P] [US3] Crear `frontend/src/pages/MisAdeudos.jsx` con total adeudado, detalle de pagos pendientes y mensaje vacío, usando `pedir` de `frontend/src/services/api.js`.
+- [X] T032 [US3] Registrar las vistas `Adeudos` en `/payments/adeudos` para `administrador` y `recepcionista`, y `MisAdeudos` en `/me/payments/adeudos` para `cliente`, en `frontend/src/App.jsx`.
 
 **Punto de control**: las tres historias funcionan de forma independiente y están integradas.
 

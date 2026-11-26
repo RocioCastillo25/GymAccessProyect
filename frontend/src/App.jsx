@@ -17,6 +17,8 @@ import Membresias from './pages/Membresias.jsx';
 import PagosRegistro from './pages/PagosRegistro.jsx';
 import PagosHistorial from './pages/PagosHistorial.jsx';
 import MisPagos from './pages/MisPagos.jsx';
+import Adeudos from './pages/Adeudos.jsx';
+import MisAdeudos from './pages/MisAdeudos.jsx';
 import Acceso from './pages/Acceso.jsx';
 import Entrenadores from './pages/Entrenadores.jsx';
 import Asignaciones from './pages/Asignaciones.jsx';
@@ -80,6 +82,7 @@ const MODULOS = [
     vistas: [
       { ruta: '', etiqueta: 'Registro', Componente: PagosRegistro, roles: ROLES_RECEPCION },
       { ruta: 'historial', etiqueta: 'Historial', Componente: PagosHistorial, roles: ROLES_RECEPCION },
+      { ruta: 'adeudos', etiqueta: 'Adeudos', Componente: Adeudos, roles: ROLES_RECEPCION },
     ],
   },
   {
@@ -101,7 +104,10 @@ const MODULOS = [
   {
     base: '/me/payments',
     titulo: 'Mis pagos',
-    vistas: [{ ruta: '', Componente: MisPagos, roles: ['cliente'] }],
+    vistas: [
+      { ruta: '', etiqueta: 'Historial', Componente: MisPagos, roles: ['cliente'] },
+      { ruta: 'adeudos', etiqueta: 'Mis adeudos', Componente: MisAdeudos, roles: ['cliente'] },
+    ],
   },
   {
     base: '/me/training',
