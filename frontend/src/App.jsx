@@ -23,6 +23,7 @@ import Progreso from './pages/Progreso.jsx';
 import Dashboard from './pages/Dashboard.jsx';
 import PersonalAsignado from './pages/PersonalAsignado.jsx';
 import MiEntrenamiento from './pages/MiEntrenamiento.jsx';
+import Reportes from './pages/Reportes.jsx';
 
 const ROLES_ADMIN = ['administrador'];
 const ROLES_RECEPCION = ['administrador', 'recepcionista'];
@@ -33,6 +34,11 @@ const MODULOS = [
     base: '/dashboard',
     titulo: 'Dashboard',
     vistas: [{ ruta: '', Componente: Dashboard, roles: ['administrador', 'recepcionista', 'entrenador'] }],
+  },
+  {
+    base: '/reports',
+    titulo: 'Reportes',
+    vistas: [{ ruta: '', Componente: Reportes, roles: ROLES_RECEPCION }],
   },
   {
     base: '/users',

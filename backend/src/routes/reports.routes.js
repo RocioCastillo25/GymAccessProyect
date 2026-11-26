@@ -1,72 +1,31 @@
-// backend/routes/reports.routes.js
-import express from 'express';
-import { pool } from '../config/db.js'; // Ajusta según la ruta de tu conexión a MySQL
+// Rutas de reportes del Sprint 4 (US-S4-01 a US-S4-04 y US-S4-07).
+// Los reportes financieros, de accesos y sus exportaciones son exclusivos del
+// administrador; el reporte de vencidos y las alertas también los consulta el
+// recepcionista (RN-S4-01).
 
-const router = express.Router();
+import { Router } from 'express';
+import {
+  financiero,
+  accesos,
+  vencidos,
+  alertasVencimiento,
+  registrarExportacionReporte,
+} from '../controllers/reporte.controller.js';
+import { autenticar } from '../middlewares/autenticar.js';
+import { autorizar } from '../middlewares/autorizar.js';
 
-// Middleware de verificación de rol administrador (RN-S4-01)
-const verificarAdmin = (req, res, next) => {
-  const { rol } = req.user || {}; // Asumiendo que tu auth inyecta req.user
-  
-  if (rol !== 'administrador') {
-    return res.status(403).json({ 
-      success: false, 
-      error: 'Acceso denegado: Se requiere rol de administrador' 
-    });
-  }
-  next();
-};
+const router = Router();
 
-// US-S4-01: Reporte financiero de ingresos por rango de fechas
-router.get('/financial', verificarAdmin, async (req, res) => {
-  try {
-    const { fechaInicio, fechaFin } = req.query;
+router.use(autenticar);
 
-    if (!fechaInicio || !fechaFin) {
-      return res.status(400).json({ 
-        success: false, 
-        error: 'Se requieren los parámetros fechaInicio y fechaFin (formato YYYY-MM-DD)' 
-      });
-    }
-    
-    const [rows] = await pool.query(
-      `SELECT metodo_pago, COUNT(*) AS total_transacciones, SUM(monto) AS ingresos_totales 
-       FROM pagos 
-       WHERE fecha_pago BETWEEN ? AND ? 
-       GROUP BY metodo_pago`,
-      [fechaInicio, fechaFin]
-    );
-
-    res.json({ success: true, data: rows });
-  } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
-  }
-});
-
-// US-S4-02: Reporte de accesos y concurrencia
-router.get('/access', verificarAdmin, async (req, res) => {
-  try {
-    const { fechaInicio, fechaFin } = req.query;
-
-    if (!fechaInicio || !fechaFin) {
-      return res.status(400).json({ 
-        success: false, 
-        error: 'Se requieren los parámetros fechaInicio y fechaFin' 
-      });
-    }
-
-    const [rows] = await pool.query(
-      `SELECT DATE(fecha_hora) AS fecha, HOUR(fecha_hora) AS hora, tipo_acceso, COUNT(*) AS total 
-       FROM accesos 
-       WHERE fecha_hora BETWEEN ? AND ? 
-       GROUP BY DATE(fecha_hora), HOUR(fecha_hora), tipo_acceso`,
-      [fechaInicio, fechaFin]
-    );
-
-    res.json({ success: true, data: rows });
-  } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
-  }
-});
+router.get('/reports/financial', autorizar('administrador'), financiero);
+router.get('/reports/access', autorizar('administrador'), accesos);
+router.get('/reports/expiring-memberships', autorizar('administrador', 'recepcionista'), alertasVencimiento);
+router.get('/reports/expired-clients', autorizar('administrador', 'recepcionista'), vencidos);
+router.post(
+  '/reports/exports',
+  autorizar('administrador', 'recepcionista'),
+  registrarExportacionReporte
+);
 
 export default router;

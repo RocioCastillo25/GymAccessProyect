@@ -91,4 +91,37 @@ describe('Navegación por módulos', () => {
     await waitFor(() => expect(window.location.pathname).toBe('/dashboard'));
     expect(await screen.findByRole('heading', { name: 'Resumen operativo' })).toBeInTheDocument();
   });
+
+  it('permite al administrador entrar a /reports', async () => {
+    autenticar('administrador');
+    simularApi();
+    window.history.pushState({}, '', '/reports');
+
+    render(<App />);
+
+    expect(await screen.findByRole('heading', { name: 'Reportes y analítica' })).toBeInTheDocument();
+    expect(window.location.pathname).toBe('/reports');
+  });
+
+  it('permite al recepcionista entrar a /reports', async () => {
+    autenticar('recepcionista');
+    simularApi();
+    window.history.pushState({}, '', '/reports');
+
+    render(<App />);
+
+    expect(await screen.findByRole('heading', { name: 'Reportes y analítica' })).toBeInTheDocument();
+    expect(window.location.pathname).toBe('/reports');
+  });
+
+  it('redirige al entrenador que intenta entrar a /reports', async () => {
+    autenticar('entrenador');
+    simularApi();
+    window.history.pushState({}, '', '/reports');
+
+    render(<App />);
+
+    await waitFor(() => expect(window.location.pathname).toBe('/dashboard'));
+    expect(await screen.findByRole('heading', { name: 'Resumen operativo' })).toBeInTheDocument();
+  });
 });

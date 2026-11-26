@@ -4,27 +4,23 @@ import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import request from 'supertest';
 import jwt from 'jsonwebtoken';
 import app from '../../src/app.js';
-import { consultar, cerrarPool } from '../../src/config/baseDatos.js';
+import { cerrarPool } from '../../src/config/baseDatos.js';
 import { config } from '../../src/config/entorno.js';
-
-const correoAdmin = process.env.SEED_ADMIN_EMAIL || 'admin@gimnasio.local';
-const passwordAdmin = process.env.SEED_ADMIN_PASSWORD || 'CambieClave123';
+import { usuarioYToken, limpiarUsuariosPrueba } from '../helpers/usuarios.js';
 
 let tokenValido = '';
-
-async function tokenDe(correo, password) {
-  const respuesta = await request(app)
-    .post('/api/auth/login')
-    .send({ correo, password });
-  return respuesta.body.token;
-}
+let adminPrueba = null;
 
 describe('Rutas protegidas con token (HU1)', () => {
   beforeAll(async () => {
-    tokenValido = await tokenDe(correoAdmin, passwordAdmin);
+    // Administrador propio de la prueba: no depende de la contraseña real.
+    const sesion = await usuarioYToken('administrador');
+    adminPrueba = sesion.usuario;
+    tokenValido = sesion.token;
   });
 
   afterAll(async () => {
+    await limpiarUsuariosPrueba();
     await cerrarPool();
   });
 
@@ -45,9 +41,14 @@ describe('Rutas protegidas con token (HU1)', () => {
   });
 
   it('responde 401 con un token expirado', async () => {
-    const usuario = (await consultar('SELECT id_usuario, nombre, correo, rol FROM usuarios WHERE correo = ? LIMIT 1;', [correoAdmin]))[0];
     const expirado = jwt.sign(
-      { sub: usuario.id_usuario, nombre: usuario.nombre, correo: usuario.correo, rol: usuario.rol, exp: Math.floor(Date.now() / 1000) - 60 },
+      {
+        sub: adminPrueba.id,
+        nombre: `Usuario ${adminPrueba.rol}`,
+        correo: adminPrueba.correo,
+        rol: adminPrueba.rol,
+        exp: Math.floor(Date.now() / 1000) - 60,
+      },
       config.jwt.secreto
     );
     const respuesta = await request(app)
@@ -64,7 +65,7 @@ describe('Rutas protegidas con token (HU1)', () => {
       .set('Authorization', `Bearer ${tokenValido}`);
 
     expect(respuesta.status).toBe(200);
-    expect(respuesta.body.usuario.correo).toBe(correoAdmin);
+    expect(respuesta.body.usuario.correo).toBe(adminPrueba.correo);
     expect(respuesta.body.usuario).not.toHaveProperty('password');
   });
 });

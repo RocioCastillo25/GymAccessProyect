@@ -1,7 +1,25 @@
 // Gestión de membresías (HU2, FR-005 a FR-007, FR-010).
 
 import { useCallback, useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { pedir } from '../services/api.js';
+
+function formatearMoneda(valor) {
+  return Number(valor ?? 0).toLocaleString('es-GT', {
+    style: 'currency',
+    currency: 'GTQ',
+    minimumFractionDigits: 2,
+  });
+}
+
+function estaPorVencer(membresia) {
+  if (membresia.estado !== 'activa') return false;
+  const hoy = new Date();
+  hoy.setHours(0, 0, 0, 0);
+  const fin = new Date(`${membresia.fechaFin}T00:00:00`);
+  const dias = Math.round((fin.getTime() - hoy.getTime()) / 86400000);
+  return dias >= 0 && dias <= 5;
+}
 
 export default function Membresias() {
   const [membresias, setMembresias] = useState([]);
@@ -63,6 +81,15 @@ export default function Membresias() {
     }
   }
 
+  function seleccionarTipo(id) {
+    setIdTipoMembresia(String(id));
+    const selector = document.getElementById('tipo-membresia');
+    if (typeof selector?.scrollIntoView === 'function') {
+      selector.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+    selector?.focus();
+  }
+
   async function cambiarEstado(membresia, estado) {
     setExito('');
     setError('');
@@ -115,7 +142,7 @@ export default function Membresias() {
               <option value="">Seleccione un tipo</option>
               {tiposActivos.map((tipo) => (
                 <option key={tipo.id} value={tipo.id}>
-                  {tipo.nombre} ({tipo.duracion} días)
+                  {tipo.nombre} ({tipo.duracion} días) - {formatearMoneda(tipo.precio)}
                 </option>
               ))}
             </select>
@@ -127,6 +154,58 @@ export default function Membresias() {
             </button>
           </div>
         </form>
+      </section>
+
+      <section className="tarjeta">
+        <div className="cabecera-reporte">
+          <div>
+            <h2>Tipos de membresía disponibles</h2>
+            <p className="textosuave">
+              Elige un tipo en el formulario para asignarlo al cliente. Hay{' '}
+              {tiposActivos.length} tipo{tiposActivos.length === 1 ? '' : 's'} activo
+              {tiposActivos.length === 1 ? '' : 's'}.
+            </p>
+          </div>
+          <div className="acciones no-imprimir">
+            <Link className="boton-enlace" to="/memberships/types">
+              Gestionar tipos
+            </Link>
+          </div>
+        </div>
+
+        {tiposActivos.length === 0 && (
+          <div className="mensaje-error">
+            No hay tipos activos. Un administrador debe crear o activar un tipo en{' '}
+            <Link to="/memberships/types">Tipos de membresía</Link>.
+          </div>
+        )}
+
+        {tiposActivos.length > 0 && (
+          <div className="rejilla-tipos">
+            {tiposActivos.map((tipo) => (
+              <article
+                className={`tipo-card ${
+                  String(tipo.id) === idTipoMembresia ? 'seleccionado' : ''
+                }`}
+                key={tipo.id}
+              >
+                <div className="tipo-card-cabecera">
+                  <h3>{tipo.nombre}</h3>
+                  <span className="etiqueta-estado activo">{tipo.duracion} días</span>
+                </div>
+                <p className="textosuave">{tipo.descripcion || 'Sin descripción.'}</p>
+                <span className="tipo-precio">{formatearMoneda(tipo.precio)}</span>
+                <button
+                  type="button"
+                  className="secundario"
+                  onClick={() => seleccionarTipo(tipo.id)}
+                >
+                  {String(tipo.id) === idTipoMembresia ? 'Tipo seleccionado' : 'Usar este tipo'}
+                </button>
+              </article>
+            ))}
+          </div>
+        )}
       </section>
 
       <section className="tarjeta">
@@ -151,7 +230,10 @@ export default function Membresias() {
             </thead>
             <tbody>
               {membresias.map((membresia) => (
-                <tr key={membresia.id}>
+                <tr
+                  key={membresia.id}
+                  className={estaPorVencer(membresia) ? 'fila-alerta' : undefined}
+                >
                   <td>{membresia.id}</td>
                   <td>{nombreCliente(membresia.idCliente)}</td>
                   <td>{nombreTipo(membresia.idTipoMembresia)}</td>
@@ -161,6 +243,9 @@ export default function Membresias() {
                     <span className={`etiqueta-estado ${membresia.estado}`}>
                       {membresia.estado}
                     </span>
+                    {estaPorVencer(membresia) && (
+                      <span className="etiqueta-estado advertencia">Por vencer</span>
+                    )}
                   </td>
                   <td className="acciones">
                     {membresia.estado === 'activa' && (

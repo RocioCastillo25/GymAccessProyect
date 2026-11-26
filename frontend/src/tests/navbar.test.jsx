@@ -29,6 +29,7 @@ describe('Menú superior por rol', () => {
     expect(screen.getByRole('link', { name: 'Usuarios' })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Clientes' })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Dashboard' })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Reportes' })).toBeInTheDocument();
     expect(screen.queryByRole('link', { name: 'Mi perfil' })).not.toBeInTheDocument();
   });
 
@@ -39,7 +40,15 @@ describe('Menú superior por rol', () => {
     expect(screen.getByRole('link', { name: 'Entrenamiento' })).toBeInTheDocument();
     expect(screen.queryByRole('link', { name: 'Usuarios' })).not.toBeInTheDocument();
     expect(screen.queryByRole('link', { name: 'Pagos' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: 'Reportes' })).not.toBeInTheDocument();
     expect(screen.queryByRole('link', { name: 'Mi perfil' })).not.toBeInTheDocument();
+  });
+
+  it('muestra reportes al recepcionista sin acceso a usuarios', () => {
+    pintarConRol('recepcionista');
+
+    expect(screen.getByRole('link', { name: 'Reportes' })).toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: 'Usuarios' })).not.toBeInTheDocument();
   });
 
   it('muestra únicamente su información al cliente', () => {
@@ -50,6 +59,7 @@ describe('Menú superior por rol', () => {
     expect(screen.queryByRole('link', { name: 'Usuarios' })).not.toBeInTheDocument();
     expect(screen.queryByRole('link', { name: 'Pagos' })).not.toBeInTheDocument();
     expect(screen.queryByRole('link', { name: 'Clientes' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: 'Reportes' })).not.toBeInTheDocument();
   });
 
   it('ofrece cerrar sesión', () => {

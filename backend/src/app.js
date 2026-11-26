@@ -4,10 +4,13 @@ import express from 'express';
 import cors from 'cors';
 import rutasApi from './routes/index.js';
 import { manejarErrores, recursoNoEncontrado } from './middlewares/manejoErrores.js';
+import { config } from './config/entorno.js';
 
 const app = express();
 
-app.use(cors());
+// En desarrollo se mantiene abierto; con CORS_ORIGIN definido se restringe a
+// los orígenes permitidos separados por comas (US-S4-06).
+app.use(cors(config.corsOrigen.length > 0 ? { origin: config.corsOrigen } : undefined));
 app.use(express.json());
 
 // Registro de rutas bajo el prefijo /api (contrato en contracts/api-rest.md).
