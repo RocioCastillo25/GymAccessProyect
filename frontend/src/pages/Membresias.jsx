@@ -29,6 +29,7 @@ export default function Membresias() {
   const [idTipoMembresia, setIdTipoMembresia] = useState('');
   const [exito, setExito] = useState('');
   const [error, setError] = useState('');
+  const [renovacion, setRenovacion] = useState(null);
 
   const cargar = useCallback(async () => {
     try {
@@ -107,6 +108,32 @@ export default function Membresias() {
 
   const tiposActivos = tipos.filter((tipo) => tipo.estado === 'activo');
 
+  function iniciarRenovacion(membresia) {
+    setExito('');
+    setError('');
+    setRenovacion({
+      idMembresia: membresia.id,
+      idCliente: membresia.idCliente,
+      idTipoMembresia: tiposActivos[0]?.id ?? '',
+    });
+  }
+
+  async function confirmarRenovacion() {
+    setExito('');
+    setError('');
+    try {
+      const respuesta = await pedir(`/api/membresias/${renovacion.idMembresia}/renovar`, {
+        method: 'POST',
+        body: JSON.stringify({ idTipoMembresia: Number(renovacion.idTipoMembresia) }),
+      });
+      setExito(respuesta.mensaje);
+      setRenovacion(null);
+      await cargar();
+    } catch (err) {
+      setError(err.message);
+    }
+  }
+
   return (
     <>
       <section className="tarjeta formulario">
@@ -114,6 +141,52 @@ export default function Membresias() {
 
         {exito && <div className="mensaje-exito">{exito}</div>}
         {error && <div className="mensaje-error">{error}</div>}
+
+        {renovacion && (
+          <div
+            className="mensaje-confirmacion"
+            role="dialog"
+            aria-label="Confirmar renovación"
+          >
+            <p>
+              ¿Renovar la membresía {renovacion.idMembresia} de{' '}
+              {nombreCliente(renovacion.idCliente)}? La membresía anterior se conservará en el
+              historial.
+            </p>
+            <div className="campo">
+              <label htmlFor="tipo-renovacion">Tipo para la renovación</label>
+              <select
+                id="tipo-renovacion"
+                value={renovacion.idTipoMembresia}
+                onChange={(evento) =>
+                  setRenovacion({ ...renovacion, idTipoMembresia: evento.target.value })
+                }
+              >
+                {tiposActivos.map((tipo) => (
+                  <option key={tipo.id} value={tipo.id}>
+                    {tipo.nombre} ({tipo.duracion} días)
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="acciones">
+              <button
+                type="button"
+                onClick={confirmarRenovacion}
+                disabled={!renovacion.idTipoMembresia}
+              >
+                Confirmar renovación
+              </button>
+              <button
+                type="button"
+                className="secundario"
+                onClick={() => setRenovacion(null)}
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
+        )}
 
         <form onSubmit={asignar}>
           <div className="campo">
@@ -248,6 +321,14 @@ export default function Membresias() {
                     )}
                   </td>
                   <td className="acciones">
+                    <button
+                      type="button"
+                      className="secundario"
+                      onClick={() => iniciarRenovacion(membresia)}
+                      disabled={tiposActivos.length === 0}
+                    >
+                      Renovar
+                    </button>
                     {membresia.estado === 'activa' && (
                       <button
                         type="button"

@@ -7,6 +7,7 @@ import {
   listar,
   obtener,
   cambiarEstado,
+  renovarMembresia,
   obtenerPropia,
 } from '../controllers/membresia.controller.js';
 import { autenticar } from '../middlewares/autenticar.js';
@@ -21,5 +22,10 @@ router.get('/membresias', autorizar('administrador', 'recepcionista'), listar);
 router.get('/membresias/:id', autorizar('administrador', 'recepcionista'), obtener);
 router.post('/membresias', autorizar('administrador', 'recepcionista'), crear);
 router.patch('/membresias/:id/estado', autorizar('administrador', 'recepcionista'), cambiarEstado);
+router.post(
+  '/membresias/:id/renovar',
+  autorizar('administrador', 'recepcionista'),
+  renovarMembresia
+);
 
 export default router;

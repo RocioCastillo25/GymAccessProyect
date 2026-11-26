@@ -170,6 +170,18 @@ label {
   margin-bottom: var(--espaciado-md);
 }
 
+.mensaje-confirmacion {
+  border: 1px solid var(--border-light);
+  border-radius: var(--radio-tarjeta);
+  background: rgba(255, 255, 255, 0.04);
+  padding: var(--espaciado-md);
+  margin-bottom: var(--espaciado-md);
+}
+
+.mensaje-confirmacion p {
+  margin-top: 0;
+}
+
 .texto-error {
   color: var(--color-error);
   display: block;
