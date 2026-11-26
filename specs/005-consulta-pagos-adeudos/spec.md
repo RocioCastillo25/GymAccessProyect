@@ -19,6 +19,13 @@ sin modificar el historial financiero ni agregar pasarelas de pago.".
 pagos y auditoría de los Sprints 1 a 4. No redefine el registro de pagos ni los reportes
 financieros del Sprint 4; solo agrega operaciones de lectura y sus vistas de consulta.
 
+**Trazabilidad de sprint**: esta funcionalidad cierra `US-S2-05` (Sprint 2, según
+`specs/002-membresias-pagos-acceso-facial/spec.md:463`) y `US-G11` (historia general de
+`docs/project-context.md:563`). No crea un Sprint 5: reabre dos requisitos del MVP que quedaron
+sin implementar. El proyecto ya documenta el Sprint 4 en `docs/sprint-4.md` y
+`docs/reporte-sprint-4.md`; la formalización del principio I se hará en un cambio de gobernanza
+separado con `/speckit.constitution`.
+
 ## Clarifications
 
 ### Session 2026-11-19
@@ -33,6 +40,9 @@ financieros del Sprint 4; solo agrega operaciones de lectura y sus vistas de con
 - Q: ¿Deben paginarse las respuestas de consulta de pagos o devolver todos los registros que coincidan
   con los filtros? → A: Paginación con `limite` y `offset`: 50 registros por defecto, 200 como
   máximo, y la respuesta incluye el total general.
+- Q: ¿La autorización del recepcionista para consultar historial y adeudos generales cuenta con
+  aprobación del equipo? → A: Sí, aprobada en la sesión de 2026-11-19 y registrada como
+  desviación documentada en el plan antes de `/speckit.implement`.
 
 ## Escenarios de usuario y pruebas *(obligatorio)*
 
@@ -157,6 +167,12 @@ agrupado por cliente junto con el detalle de los pagos que lo componen.
 
 ### Requisitos funcionales
 
+#### Convención de identificadores
+
+Los `FR-001` a `FR-019` de esta especificación son locales a la funcionalidad 005. En documentos
+que citen también la spec 002 se escriben con prefijo `005-FR-###` (por ejemplo `005-FR-011`)
+para distinguirlos de `FR-011` a `FR-015` de la spec 002, que significan otra cosa.
+
 **Consulta de pagos**
 
 - **FR-001**: El sistema DEBE permitir a los roles administrador y recepcionista consultar el
@@ -182,9 +198,13 @@ agrupado por cliente junto con el detalle de los pagos que lo componen.
 **Consulta de adeudos**
 
 - **FR-009**: El sistema DEBE permitir a administrador y recepcionista consultar los adeudos de un
-  cliente específico o de todos los clientes.
+  cliente específico o de todos los clientes, con filtro opcional `idCliente` y paginación mediante
+  `limite` (por defecto 50, máximo 200) y `offset` (por defecto 0). La respuesta DEBE incluir el
+  `total` de clientes con al menos un pago pendiente, sin aplicar paginación a ese total.
 - **FR-010**: El sistema DEBE permitir al cliente consultar únicamente sus propios adeudos,
-  resolviendo el cliente por el `correo` del token JWT y sin aceptar parámetros de cliente.
+  resolviendo el cliente por el `correo` del token JWT y sin aceptar parámetros de cliente. Este
+  endpoint NO aplica paginación: devuelve el `totalAdeudado` y el detalle completo de sus pagos
+  pendientes.
 - **FR-011**: El cálculo de adeudos DEBE sumar los montos de todos los pagos con estado `pendiente`
   del cliente correspondiente; los pagos `completados` y `cancelados` NO DEBEN incluirse en el total
   adeudado.
@@ -261,6 +281,8 @@ agrupado por cliente junto con el detalle de los pagos que lo componen.
 - Los reportes financieros del Sprint 4 siguen siendo la fuente para análisis agregados; esta spec
   cubre consultas operativas por cliente, no reportería analítica.
 - Los mensajes y la interfaz se redactan en español.
+- La definición de adeudos de esta especificación (`005-FR-011`) prevalece sobre la redacción
+  anterior de `002/FR-015`, que queda actualizada para evitar dos definiciones simultáneas.
 
 ## Fuera del alcance
 
@@ -282,11 +304,13 @@ Decisiones pendientes después de la sesión 2026-11-19:
 
 ## Trazabilidad
 
-| Historia de usuario | US origen | Requisitos principales | Funcionalidad             |
-| ------------------- | --------- | ---------------------- | ------------------------- |
-| HU1                 | US-005-01 | FR-001 a FR-008        | Consulta de pagos         |
-| HU2                 | US-005-02 | FR-001, FR-002, FR-005 a FR-008 | Consulta de mis pagos |
-| HU3                 | US-005-03 | FR-009 a FR-014        | Consulta de adeudos       |
+| Historia de usuario | US origen | Requisitos principales | Sprint | Funcionalidad |
+| ------------------- | --------- | ---------------------- | ------ | ------------- |
+| HU1                 | US-005-01 | FR-001 a FR-008        | Sprint 2 (`US-S2-05`) | Consulta de pagos |
+| HU2                 | US-005-02 | FR-001, FR-002, FR-005 a FR-008 | Sprint 2 (`US-S2-05`) | Consulta de mis pagos |
+| HU3                 | US-005-03 | FR-009 a FR-014        | Sprint 2 (`US-S2-05`) | Consulta de adeudos |
+
+`US-G11` es una historia general sin sprint asignado en `docs/project-context.md`.
 
 Los requisitos FR-015 a FR-019 cubren seguridad, arquitectura y manejo de errores, y se verifican
 mediante los criterios SC-002, SC-003, SC-007 y SC-008.

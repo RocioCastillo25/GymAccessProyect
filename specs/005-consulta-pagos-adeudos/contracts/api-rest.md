@@ -238,8 +238,8 @@ No acepta filtros de cliente; un `idCliente` válido se ignora.
 
 | Requisito | Endpoint(s) |
 |-----------|-------------|
-| FR-001, FR-003, FR-004, FR-008 | `GET /api/pagos` |
-| FR-002, FR-006 | `GET /api/pagos/mios` |
-| FR-009, FR-011, FR-012 | `GET /api/pagos/adeudos` |
-| FR-010, FR-011, FR-013 | `GET /api/pagos/adeudos/mios` |
-| FR-005, FR-016, FR-019 | Todos los endpoints |
+| 005-FR-001, 005-FR-003, 005-FR-004, 005-FR-008 | `GET /api/pagos` |
+| 005-FR-002, 005-FR-006 | `GET /api/pagos/mios` |
+| 005-FR-009, 005-FR-011, 005-FR-012 | `GET /api/pagos/adeudos` |
+| 005-FR-010, 005-FR-011, 005-FR-013 | `GET /api/pagos/adeudos/mios` |
+| 005-FR-005, 005-FR-016, 005-FR-019 | Todos los endpoints |

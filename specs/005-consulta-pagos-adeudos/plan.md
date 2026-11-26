@@ -8,10 +8,10 @@
 
 ## Resumen
 
-Esta funcionalidad cierra los requisitos pendientes `US-G11` y `US-S2-05` del MVP: consultar el
-historial de pagos y los adeudos. No es un Sprint 5 ni una ampliación de alcance; agrega solo
-operaciones de lectura sobre la tabla `pagos`, que ya existe y ya registra pagos mediante
-`POST /api/pagos`.
+Esta funcionalidad cierra los requisitos pendientes `US-G11` (historia general) y `US-S2-05`
+(Sprint 2) del MVP: consultar el historial de pagos y los adeudos. No crea un Sprint 5 ni amplía
+el alcance: reabre dos historias ya documentadas y agrega solo operaciones de lectura sobre la
+tabla `pagos`, que ya existe y registra pagos mediante `POST /api/pagos`.
 
 El flujo central es: administrador y recepcionista consultan el historial general con filtros y
 paginación, y consultan los adeudos agrupados por cliente; el cliente consulta únicamente sus pagos y
@@ -27,7 +27,8 @@ agregan pasarelas de pago, facturación, cobranza, notificaciones ni consulta de
 ## Contexto técnico
 
 **Lenguaje/Versión**: JavaScript (ES2022) con ES Modules en `backend/`, `database/scripts/` y
-`frontend/`; Node.js 20 LTS; React 18 con Vite en `frontend/`.
+`frontend/`; Node.js 20 LTS o superior (entorno verificado: v26.13.1); React 18 con Vite en
+`frontend/`.
 
 **Dependencias principales**: sin dependencias nuevas. Backend: `express`, `mysql2`, `bcrypt`,
 `jsonwebtoken`, `cors` y `dotenv`. Frontend: React, React DOM, React Router y
@@ -78,7 +79,7 @@ la Fase 1.*
 | III. Stack tecnológico y base de datos local | PASS | React, Node.js/Express, MySQL local, JWT y ES Modules se mantienen; no se incorpora tecnología ni dependencia nueva. |
 | IV. Base de datos y persistencia | PASS | No se crean tablas ni columnas; no se eliminan ni modifican pagos; la integridad referencial de `pagos` queda intacta. |
 | V. Seguridad y protección de información | PASS | Autenticación JWT y validación de filtros en backend; mensajes claros sin detalles técnicos; no se devuelven secretos, credenciales ni datos biométricos. |
-| VI. Roles y permisos | PASS | Historial y adeudos generales: administrador y recepcionista; historial y adeudos propios: cliente; entrenador y otros roles: `403`. |
+| VI. Roles y permisos | PASS (desviación documentada) | Historial y adeudos generales: administrador y recepcionista, decisión aprobada en `/speckit.clarify` del 2026-11-19 y justificada en «Seguimiento de la complejidad»; propios: cliente; entrenador y otros roles: `403`. |
 | VII. Integridad de las reglas de negocio | PASS | El adeudo suma solo pagos `pendientes`; los pagos sin membresía aparecen en el historial y cuentan si están pendientes; la consulta no altera el historial financiero. |
 | VIII. Reconocimiento facial y control de acceso | PASS | No se toca el flujo facial ni el control de acceso; no se exponen descriptores ni datos biométricos. |
 | IX. API y manejo de errores | PASS | Cuatro rutas REST JSON, middlewares existentes, validación centralizada de parámetros y errores con códigos HTTP coherentes. |
@@ -175,7 +176,8 @@ usado por Clientes, Membresías y Entrenamiento. No se agrega ninguna migración
 
 | Violación | Por qué es necesaria | Alternativa más simple rechazada porque |
 |-----------|----------------------|------------------------------------------|
-| (ninguna) | — | — |
+| I. Alcance, MVP y fuente de verdad | La constitución dice «tres sprints», pero el proyecto ya documentó y aprobó el Sprint 4; esta spec cierra `US-S2-05` (Sprint 2) y `US-G11` sin crear un sprint nuevo. | Rechazado: dejar `US-G11` y `US-S2-05` sin implementar deja el MVP incompleto. La actualización formal del principio I se hará con `/speckit.constitution` en un cambio separado. |
+| VI. Roles y permisos | La constitución enumera para el recepcionista registrar pagos y consultar/renovar membresías, pero no consultar pagos ni adeudos; `US-G11` y la operación diaria de recepción necesitan esa consulta. | Rechazado: restringir a administrador deja sin consulta operativa a quien registra los pagos. Si el equipo no aprueba la ampliación, cambiar `FR-001`/`FR-009` a `autorizar('administrador')`. |
 
 ## Fases de diseño
 

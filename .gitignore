@@ -51,5 +51,6 @@ $RECYCLE.BIN/
 *.orig
 *.rej
 *.swp
-.vscode/
+.vscode/*
+!.vscode/mcp.json
 .idea/
