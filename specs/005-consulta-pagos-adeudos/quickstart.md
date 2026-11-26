@@ -51,9 +51,10 @@ cd backend; npm test
 cd frontend; npm test
 ```
 
-Resultado esperado: todas las pruebas de `pagosConsulta.test.js`,
-`pagoConsulta.validator.test.js` y las pruebas de componentes nuevas pasan, y no se registran
-regresiones en las pruebas de `pagosRegistro.test.js` ni en las del Sprint 4.
+Resultado esperado: todas las pruebas de `pagosHistorial.test.js`, `pagosPropios.test.js`,
+`adeudos.test.js`, `pagoConsulta.validator.test.js` y las pruebas de componentes nuevas
+(`PagosHistorial.test.jsx`, `MisPagos.test.jsx`, `Adeudos.test.jsx` y `MisAdeudos.test.jsx`) pasan,
+y no se registran regresiones en `pagosRegistro.test.js` ni en las pruebas del Sprint 4.
 
 ## 5. Validación funcional
 

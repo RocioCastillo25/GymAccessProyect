@@ -157,7 +157,7 @@ recibe `403`.
 - [X] T037 Actualizar `README.md` para documentar los endpoints de consulta, las vistas `/payments/*` y `/me/payments/*` y los roles autorizados.
 - [X] T038 [P] Ejecutar la validación completa de `specs/005-consulta-pagos-adeudos/quickstart.md` y verificar los criterios SC-001 a SC-008.
 
-  > Validación T038: 35 archivos y 210 pruebas del backend y 18 archivos y 59 pruebas del frontend en verde; `EXPLAIN` con 10,000 pagos confirmó `idx_pagos_estado_fecha`, `idx_fecha_pago` e `ix_pagos_cliente`, con respuestas de 2 ms a 15 ms (SC-006). SC-001 a SC-005 y SC-007 quedan cubiertos por `pagosHistorial.test.js`, `pagosPropios.test.js`, `adeudos.test.js` y las pruebas de componentes; SC-008 por la ejecución conjunta de backend y frontend. La guía rápida cita `pagosConsulta.test.js`, nombre que no coincide con los tres archivos exigidos en `tasks.md`; se conserva hasta aprobar su corrección.
+  > Validación T038: 35 archivos y 210 pruebas del backend y 18 archivos y 59 pruebas del frontend en verde; `EXPLAIN` con 10,000 pagos confirmó `idx_pagos_estado_fecha`, `idx_fecha_pago` e `ix_pagos_cliente`, con respuestas de 2 ms a 15 ms (SC-006). SC-001 a SC-005 y SC-007 quedan cubiertos por `pagosHistorial.test.js`, `pagosPropios.test.js`, `adeudos.test.js` y las pruebas de componentes; SC-008 por la ejecución conjunta de backend y frontend. La guía rápida citaba `pagosConsulta.test.js`; tras la aprobación del 2026-11-26 se ajustó a los tres archivos reales y a sus pruebas de componentes.
 
 ---
 
