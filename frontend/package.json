@@ -4,6 +4,9 @@
   "private": true,
   "description": "Aplicación web React del Sistema de Gestión para Gimnasio - Sprint 1",
   "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",

@@ -10,16 +10,21 @@ import { usuarioYToken, limpiarUsuariosPrueba } from '../helpers/usuarios.js';
 let tokenAdmin = '';
 let tokenRecepcionista = '';
 let tokenEntrenador = '';
+const tiposCreados = [];
 
 function nuevoNombre() {
   return `Prueba ${randomUUID()}`;
 }
 
 async function crearTipo(token, cuerpo) {
-  return request(app)
+  const respuesta = await request(app)
     .post('/api/tipos-membresia')
     .set('Authorization', `Bearer ${token}`)
     .send(cuerpo);
+  if (respuesta.status === 201) {
+    tiposCreados.push(respuesta.body.tipoMembresia.id);
+  }
+  return respuesta;
 }
 
 beforeAll(async () => {
@@ -29,7 +34,13 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
-  await consultar("DELETE FROM tipos_membresia WHERE nombre LIKE 'Prueba %';");
+  if (tiposCreados.length > 0) {
+    const marcadores = tiposCreados.map(() => '?').join(', ');
+    await consultar(
+      `DELETE FROM tipos_membresia WHERE id_tipo_membresia IN (${marcadores});`,
+      tiposCreados
+    );
+  }
   await limpiarUsuariosPrueba();
   await cerrarPool();
 });

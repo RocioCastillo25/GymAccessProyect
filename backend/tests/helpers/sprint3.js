@@ -54,6 +54,9 @@ export async function asignarDirecto(idCliente, idEntrenador, { esPrincipal = tr
 export async function limpiarSprint3() {
   if (idsClientes.length > 0) {
     const m = idsClientes.map(() => '?').join(', ');
+    await consultar(`DELETE FROM accesos WHERE id_cliente IN (${m});`, idsClientes);
+    await consultar(`DELETE FROM rostros WHERE id_cliente IN (${m});`, idsClientes);
+    await consultar(`DELETE FROM membresias WHERE id_cliente IN (${m});`, idsClientes);
     await consultar(`DELETE FROM progresos_clientes WHERE id_cliente IN (${m});`, idsClientes);
     await consultar(`DELETE FROM objetivos_entrenamiento WHERE id_cliente IN (${m});`, idsClientes);
     await consultar(

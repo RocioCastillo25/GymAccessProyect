@@ -4,10 +4,10 @@ import * as membresiaModelo from '../models/membresia.model.js';
 import * as clienteModelo from '../models/cliente.model.js';
 import * as tipoModelo from '../models/tipoMembresia.model.js';
 import { validarAsignacion } from '../validators/membresia.validator.js';
-import { validarEstadoMembresia } from '../validators/comunes.validator.js';
+import { validarEstadoMembresia, validarId } from '../validators/comunes.validator.js';
 import { errorValidacion, errorNoEncontrado } from '../utils/errores.js';
 import { registrarAccion } from './auditoria.service.js';
-import { hoyIso, sumarDias } from '../utils/fechas.js';
+import { fechaMayor, hoyIso, sumarDias } from '../utils/fechas.js';
 
 const MODULO = 'membresias';
 
@@ -103,6 +103,61 @@ export async function cambiarEstadoMembresia(id, estado, usuario) {
     descripcion: `Membresía ${id} pasó a ${estado}`,
   });
   return membresiaModelo.buscarPorId(id);
+}
+
+/**
+ * Renueva una membresía creando una fila nueva y conservando la anterior (FR-008, R6).
+ * Si la membresía está vigente, el nuevo periodo empieza al terminar la anterior;
+ * en los demás casos empieza hoy.
+ * @param {number} id - Identificador de la membresía previa.
+ * @param {Object} datos - `{ idTipoMembresia }` para el nuevo periodo.
+ * @param {Object} usuario - Usuario autenticado (`{ id }`).
+ * @returns {Promise<Object>} Membresía creada.
+ */
+export async function renovar(id, datos, usuario) {
+  const errorTipo = validarId(datos?.idTipoMembresia, 'idTipoMembresia');
+  if (errorTipo) {
+    throw errorValidacion('Revise los datos enviados.', [
+      { campo: 'idTipoMembresia', error: errorTipo },
+    ]);
+  }
+
+  const anterior = await membresiaModelo.buscarPorId(id);
+  if (!anterior) {
+    throw errorNoEncontrado('Membresía no encontrada.');
+  }
+
+  const idTipoMembresia = Number(datos.idTipoMembresia);
+  const tipo = await tipoModelo.buscarPorId(idTipoMembresia);
+  if (!tipo) {
+    throw errorNoEncontrado('Tipo de membresía no encontrado.');
+  }
+  if (tipo.estado !== 'activo') {
+    throw errorValidacion('Revise los datos enviados.', [
+      { campo: 'idTipoMembresia', error: 'El tipo de membresía está inactivo.' },
+    ]);
+  }
+
+  const fechaInicio =
+    anterior.estado === 'activa'
+      ? fechaMayor(anterior.fecha_fin, hoyIso())
+      : hoyIso();
+  const fechaFin = sumarDias(fechaInicio, tipo.duracion);
+  const idNueva = await membresiaModelo.crear({
+    idCliente: anterior.id_cliente,
+    idTipoMembresia,
+    fechaInicio,
+    fechaFin,
+  });
+
+  await registrarAccion({
+    idUsuario: usuario?.id ?? null,
+    accion: 'renovar_membresia',
+    modulo: MODULO,
+    resultado: 'exito',
+    descripcion: `Membresía ${anterior.id_membresia} renovada como ${idNueva}`,
+  });
+  return membresiaModelo.buscarPorId(idNueva);
 }
 
 /**

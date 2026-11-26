@@ -15,7 +15,14 @@ import MiPerfil from './pages/MiPerfil.jsx';
 import TiposMembresia from './pages/TiposMembresia.jsx';
 import Membresias from './pages/Membresias.jsx';
 import PagosRegistro from './pages/PagosRegistro.jsx';
+import PagosHistorial from './pages/PagosHistorial.jsx';
+import MisPagos from './pages/MisPagos.jsx';
+import Adeudos from './pages/Adeudos.jsx';
+import MisAdeudos from './pages/MisAdeudos.jsx';
 import Acceso from './pages/Acceso.jsx';
+import Accesos from './pages/Accesos.jsx';
+import MisAccesos from './pages/MisAccesos.jsx';
+import Auditoria from './pages/Auditoria.jsx';
 import Entrenadores from './pages/Entrenadores.jsx';
 import Asignaciones from './pages/Asignaciones.jsx';
 import Rutinas from './pages/Rutinas.jsx';
@@ -23,6 +30,7 @@ import Progreso from './pages/Progreso.jsx';
 import Dashboard from './pages/Dashboard.jsx';
 import PersonalAsignado from './pages/PersonalAsignado.jsx';
 import MiEntrenamiento from './pages/MiEntrenamiento.jsx';
+import Reportes from './pages/Reportes.jsx';
 
 const ROLES_ADMIN = ['administrador'];
 const ROLES_RECEPCION = ['administrador', 'recepcionista'];
@@ -33,6 +41,11 @@ const MODULOS = [
     base: '/dashboard',
     titulo: 'Dashboard',
     vistas: [{ ruta: '', Componente: Dashboard, roles: ['administrador', 'recepcionista', 'entrenador'] }],
+  },
+  {
+    base: '/reports',
+    titulo: 'Reportes',
+    vistas: [{ ruta: '', Componente: Reportes, roles: ROLES_RECEPCION }],
   },
   {
     base: '/users',
@@ -69,12 +82,34 @@ const MODULOS = [
   {
     base: '/payments',
     titulo: 'Pagos',
-    vistas: [{ ruta: '', Componente: PagosRegistro, roles: ROLES_RECEPCION }],
+    vistas: [
+      { ruta: '', etiqueta: 'Registro', Componente: PagosRegistro, roles: ROLES_RECEPCION },
+      { ruta: 'historial', etiqueta: 'Historial', Componente: PagosHistorial, roles: ROLES_RECEPCION },
+      { ruta: 'adeudos', etiqueta: 'Adeudos', Componente: Adeudos, roles: ROLES_RECEPCION },
+    ],
   },
   {
     base: '/access',
     titulo: 'Acceso',
-    vistas: [{ ruta: '', Componente: Acceso, roles: ROLES_RECEPCION }],
+    vistas: [
+      { ruta: '', etiqueta: 'Validación', Componente: Acceso, roles: ROLES_RECEPCION },
+      {
+        ruta: 'historial',
+        etiqueta: 'Historial',
+        Componente: Accesos,
+        roles: ['administrador', 'recepcionista', 'entrenador'],
+      },
+    ],
+  },
+  {
+    base: '/me/access',
+    titulo: 'Mis accesos',
+    vistas: [{ ruta: '', Componente: MisAccesos, roles: ['cliente'] }],
+  },
+  {
+    base: '/audit',
+    titulo: 'Auditoría',
+    vistas: [{ ruta: '', Componente: Auditoria, roles: ROLES_ADMIN }],
   },
   {
     base: '/training',
@@ -85,6 +120,14 @@ const MODULOS = [
       { ruta: 'staff', etiqueta: 'Personal asignado', Componente: PersonalAsignado, roles: ROLES_RECEPCION },
       { ruta: 'routines', etiqueta: 'Rutinas', Componente: Rutinas, roles: ['entrenador'] },
       { ruta: 'progress', etiqueta: 'Objetivos y progreso', Componente: Progreso, roles: ['entrenador'] },
+    ],
+  },
+  {
+    base: '/me/payments',
+    titulo: 'Mis pagos',
+    vistas: [
+      { ruta: '', etiqueta: 'Historial', Componente: MisPagos, roles: ['cliente'] },
+      { ruta: 'adeudos', etiqueta: 'Mis adeudos', Componente: MisAdeudos, roles: ['cliente'] },
     ],
   },
   {

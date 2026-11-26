@@ -109,3 +109,22 @@ export async function obtenerCliente(id, usuario) {
 }
 
 export { normalizar as normalizarCliente };
+
+/**
+ * Resuelve el cliente asociado al correo del token JWT (005-FR-002, 005-FR-006).
+ * Se usa en los endpoints `/mios`; la relación por correo es una convención
+ * del proyecto y no una llave foránea (data-model.md §2).
+ * @param {string} correo - Correo del usuario autenticado.
+ * @returns {Promise<Object>} Fila de `clientes`.
+ * @throws {ErrorAplicacion} 404 si no existe el cliente.
+ */
+export async function obtenerClientePorCorreo(correo) {
+  const correoNormalizado = String(correo ?? '')
+    .trim()
+    .toLowerCase();
+  const cliente = await clienteModelo.buscarPorCorreo(correoNormalizado);
+  if (!cliente) {
+    throw errorNoEncontrado('No se encontró el cliente asociado a la sesión.');
+  }
+  return cliente;
+}

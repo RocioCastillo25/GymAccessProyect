@@ -21,6 +21,16 @@ constitución del proyecto (`.specify/memory/constitution.md`).
 pagos, reconocimiento facial ni control de acceso más allá de su relación con la asignación de
 clientes y el dashboard.
 
+## Clarifications
+
+### Session 2026-11-04
+
+- Q: ¿Qué debe ocurrir con el entrenador principal anterior cuando se asigna un nuevo entrenador principal al mismo cliente? → A: Se reemplaza: el anterior pasa a estado finalizado o inactivo, el nuevo queda como principal activo y ambos se conservan en el historial.
+- Q: ¿Qué indicadores exactos debe mostrar el dashboard administrativo del Sprint 3? → A: Resumen operativo más ingresos del mes, pagos recientes y montos cobrados.
+- Q: ¿Qué datos debe guardar cada ejercicio de una rutina? → A: Nombre, series, repeticiones, instrucciones, peso sugerido, tiempo de descanso y notas adicionales.
+- Q: ¿Cómo deben registrarse y validarse los progresos del cliente? → A: Con tipo de progreso (peso, medida, repeticiones o tiempo), valor numérico, unidad y fecha; cada tipo tiene su rango válido.
+- Q: ¿Qué puede hacer el recepcionista con las asignaciones de entrenador existentes? → A: Puede crear asignaciones y reasignar al cliente; el anterior se finaliza y no se elimina del historial.
+
 ## Escenarios de usuario y pruebas *(obligatorio)*
 
 ### Historia de usuario 1 - Registro de entrenadores (Prioridad: P1) — US-S3-01
@@ -48,8 +58,8 @@ con rol entrenador y el sistema lo muestra en la consulta.
 
 ### Historia de usuario 2 - Asignación de entrenador a cliente (Prioridad: P1) — US-S3-02
 
-Como administrador o recepcionista, quiero asignar un entrenador a un cliente para establecer la
-responsabilidad del seguimiento físico y de entrenamiento.
+Como administrador o recepcionista, quiero asignar o reasignar un entrenador a un cliente para
+establecer la responsabilidad del seguimiento físico y de entrenamiento.
 
 **Por qué esta prioridad**: es la relación que habilita la creación de rutinas y el registro de
 progresos para los clientes.
@@ -86,8 +96,8 @@ asignado a su carga y el sistema la almacena.
 **Escenarios de aceptación**:
 
 1. **Dado** un entrenador autenticado y un cliente asignado a su carga, **Cuando** crea una rutina con
-   ejercicios, series, repeticiones o instrucciones, **Entonces** el sistema almacena la rutina
-   asociada al cliente y al entrenador.
+   ejercicios, series, repeticiones, instrucciones, peso sugerido, descanso y notas, **Entonces** el
+   sistema almacena la rutina asociada al cliente y al entrenador.
 2. **Dado** un entrenador autenticado y un cliente que no está a su cargo, **Cuando** intenta crear o
    modificar una rutina, **Entonces** el sistema deniega la operación.
 3. **Dado** un administrador autenticado, **Cuando** intenta crear una rutina, **Entonces** el sistema
@@ -112,8 +122,9 @@ cliente a su cargo y el sistema los conserva en el historial.
 
 1. **Dado** un entrenador autenticado y un cliente a su cargo, **Cuando** registra un objetivo de
    entrenamiento, **Entonces** el sistema lo almacena asociado al cliente y al entrenador.
-2. **Dado** un objetivo registrado, **Cuando** el entrenador registra un nuevo progreso, **Entonces**
-   el sistema conserva el registro anterior y agrega el nuevo al historial.
+2. **Dado** un objetivo registrado, **Cuando** el entrenador registra un nuevo progreso con tipo,
+   valor, unidad y fecha válidos, **Entonces** el sistema conserva el registro anterior y agrega el
+   nuevo al historial.
 3. **Dado** un entrenador autenticado y un cliente que no está a su cargo, **Cuando** intenta
    registrar objetivos o progresos, **Entonces** el sistema deniega la operación.
 4. **Dado** un recepcionista o un administrador autenticado, **Cuando** intenta registrar o editar
@@ -146,7 +157,7 @@ sistema muestra únicamente su información.
 ### Historia de usuario 6 - Dashboard administrativo (Prioridad: P2) — US-S3-06
 
 Como administrador, quiero ver un resumen de clientes activos, entrenadores asignados, progreso
-general y rendimiento del gimnasio para tomar decisiones operativas.
+general, ingresos del mes y pagos recientes para tomar decisiones operativas.
 
 **Por qué esta prioridad**: es la vista de supervisión del sprint; reutiliza datos generados por las
 historias anteriores.
@@ -157,7 +168,8 @@ indicadores clave del gimnasio.
 **Escenarios de aceptación**:
 
 1. **Dado** un administrador autenticado, **Cuando** accede al dashboard, **Entonces** el sistema
-   muestra un resumen con clientes activos, entrenadores, membresías y progreso general.
+   muestra un resumen con clientes activos, entrenadores, membresías, progreso general, ingresos del
+   mes, pagos recientes y montos cobrados.
 2. **Dado** un recepcionista o entrenador autenticado, **Cuando** accede a los indicadores
    administrativos, **Entonces** el sistema aplica los permisos de su rol y no expone información
    reservada al administrador.
@@ -226,9 +238,11 @@ entrenador y el sistema la muestra.
 **Asignación de entrenador**
 
 - **FR-005**: El administrador y el recepcionista DEBEN poder asignar un entrenador a un cliente
-  activo.
+  activo y reasignarlo. Al reasignar, la asignación anterior DEBE finalizarse y conservarse en el
+  historial; nunca DEBE eliminarse.
 - **FR-006**: Un cliente DEBE tener como máximo un entrenador principal activo en el periodo de
-  seguimiento.
+  seguimiento. Al asignar un nuevo entrenador principal, el anterior DEBE pasar a estado finalizado o
+  inactivo y ambos DEBEN conservarse en el historial.
 - **FR-007**: El sistema DEBE rechazar asignaciones a clientes inexistentes o inactivos, o a
   entrenadores inexistentes.
 - **FR-008**: El administrador y el recepcionista DEBEN poder consultar los clientes asignados a cada
@@ -239,7 +253,8 @@ entrenador y el sistema la muestra.
 - **FR-009**: El entrenador DEBE poder crear rutinas personalizadas para los clientes asignados a su
   carga.
 - **FR-010**: Una rutina DEBE estar asociada a un cliente y a un entrenador válidos.
-- **FR-011**: Una rutina DEBE incluir ejercicios con series, repeticiones o instrucciones.
+- **FR-011**: Una rutina DEBE incluir ejercicios con nombre, series, repeticiones, instrucciones,
+  peso sugerido, tiempo de descanso y notas adicionales.
 - **FR-012**: El entrenador NO DEBE poder crear ni modificar rutinas de clientes que no estén a su
   cargo; el administrador y el recepcionista NO DEBEN crear ni editar rutinas.
 
@@ -248,7 +263,8 @@ entrenador y el sistema la muestra.
 - **FR-013**: El entrenador DEBE poder registrar objetivos de entrenamiento para los clientes a su
   cargo.
 - **FR-014**: El entrenador DEBE poder registrar progresos medibles asociados a los objetivos de los
-  clientes a su cargo.
+  clientes a su cargo, indicando tipo (peso, medida, repeticiones o tiempo), valor numérico, unidad y
+  fecha. El sistema DEBE validar el rango permitido para cada tipo.
 - **FR-015**: El sistema DEBE conservar el historial de objetivos y progresos para comparar la
   evolución en el tiempo.
 - **FR-016**: El recepcionista y el administrador NO DEBEN registrar ni editar objetivos ni progresos.
@@ -262,7 +278,8 @@ entrenador y el sistema la muestra.
 **Dashboard administrativo**
 
 - **FR-019**: El administrador DEBE poder consultar un dashboard con indicadores resumidos del
-  gimnasio (clientes activos, entrenadores, membresías y progreso general).
+  gimnasio: clientes activos, entrenadores, membresías, progreso general, ingresos del mes, pagos
+  recientes y montos cobrados.
 - **FR-020**: El dashboard DEBE filtrar los indicadores según los permisos del usuario autenticado.
 - **FR-021**: El dashboard NO DEBE exponer datos sensibles de clientes fuera del resumen autorizado.
 
@@ -305,11 +322,11 @@ entrenador y el sistema la muestra.
 - **rutinas**: plan de entrenamiento de un cliente. Atributos clave: cliente, entrenador, nombre,
   descripción, fecha y estado. Se relaciona con muchos ejercicios.
 - **ejercicios_rutina**: detalle de cada ejercicio de una rutina. Atributos clave: rutina, nombre del
-  ejercicio, series, repeticiones e instrucciones.
+  ejercicio, series, repeticiones, instrucciones, peso sugerido, tiempo de descanso y notas.
 - **objetivos_entrenamiento**: meta del cliente. Atributos clave: cliente, entrenador, descripción,
   valor objetivo, fecha objetivo y estado. Se relaciona con muchos progresos.
-- **progresos_clientes**: avance medible del cliente. Atributos clave: cliente, objetivo, valor
-  registrado, fecha y observaciones. Se conserva como historial.
+- **progresos_clientes**: avance medible del cliente. Atributos clave: cliente, objetivo, tipo de
+  progreso, valor registrado, unidad, fecha y observaciones. Se conserva como historial.
 - **usuarios** y **clientes**: entidades de sprints anteriores reutilizadas; los entrenadores se
   asocian a un usuario y las rutinas, objetivos y progresos se relacionan con el cliente.
 
@@ -346,18 +363,20 @@ entrenador y el sistema la muestra.
 - MySQL está instalado y se ejecuta localmente durante el desarrollo y la demostración.
 - Un entrenador se asocia a un usuario existente con rol entrenador creado por el administrador; la
   gestión de usuarios y roles proviene del Sprint 1.
-- Un cliente tiene como máximo un entrenador principal activo; el historial de asignaciones se
-  conserva al cambiar de entrenador.
+- Un cliente tiene como máximo un entrenador principal activo; al reasignar, el anterior se finaliza
+  o desactiva y el historial de asignaciones se conserva.
 - El progreso y los objetivos son datos de seguimiento deportivo; no constituyen información médica
   oficial.
-- El dashboard reutiliza datos agregados de clientes, membresías y progresos; no requiere
-  almacenamiento adicional complejo más allá de consultas consolidadas.
+- El dashboard reutiliza datos agregados de clientes, membresías, progresos y pagos; incluye un
+  resumen financiero básico (ingresos del mes, pagos recientes y montos cobrados) sin convertirse en
+  un reporte avanzado.
 - Los mensajes e interfaz se redactan en español.
 - La verificación de permisos ocurre en el backend aunque el frontend oculte opciones según el rol.
 
 ## Fuera del alcance del Sprint 3
 
-- Reportes avanzados y exportación de información.
+- Reportes avanzados y exportación de información; el dashboard solo muestra un resumen financiero
+  básico.
 - Clases grupales, horarios y asistencia compleja.
 - Seguimiento médico o nutricional y datos clínicos.
 - Aplicación móvil, múltiples sucursales, nómina, inventario, contabilidad completa y facturación
@@ -370,11 +389,6 @@ entrenador y el sistema la muestra.
 
 Decisiones que el equipo debe aprobar y que se resolverán con `/speckit.clarify` o durante el plan:
 
-- Alcance exacto de los indicadores del dashboard administrativo.
-- Regla precisa de "entrenador principal" y manejo de reasignaciones (historial versus reemplazo).
-- Nivel de detalle de los ejercicios de rutina (series, repeticiones, peso, descanso, notas).
-- Unidades y validación de rangos de los progresos (peso, medidas, repeticiones, tiempo).
-- Si el recepcionista puede modificar asignaciones existentes o solo crearlas y consultarlas.
 - Reglas específicas de auditoría que serán funcionales en este sprint.
 
 ## Trazabilidad

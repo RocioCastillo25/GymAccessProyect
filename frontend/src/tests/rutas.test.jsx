@@ -91,4 +91,81 @@ describe('Navegación por módulos', () => {
     await waitFor(() => expect(window.location.pathname).toBe('/dashboard'));
     expect(await screen.findByRole('heading', { name: 'Resumen operativo' })).toBeInTheDocument();
   });
+
+  it('permite al administrador entrar a /reports', async () => {
+    autenticar('administrador');
+    simularApi();
+    window.history.pushState({}, '', '/reports');
+
+    render(<App />);
+
+    expect(await screen.findByRole('heading', { name: 'Reportes y analítica' })).toBeInTheDocument();
+    expect(window.location.pathname).toBe('/reports');
+  });
+
+  it('permite al recepcionista entrar a /reports', async () => {
+    autenticar('recepcionista');
+    simularApi();
+    window.history.pushState({}, '', '/reports');
+
+    render(<App />);
+
+    expect(await screen.findByRole('heading', { name: 'Reportes y analítica' })).toBeInTheDocument();
+    expect(window.location.pathname).toBe('/reports');
+  });
+
+  it('redirige al entrenador que intenta entrar a /reports', async () => {
+    autenticar('entrenador');
+    simularApi();
+    window.history.pushState({}, '', '/reports');
+
+    render(<App />);
+
+    await waitFor(() => expect(window.location.pathname).toBe('/dashboard'));
+    expect(await screen.findByRole('heading', { name: 'Resumen operativo' })).toBeInTheDocument();
+  });
+
+  it('permite al administrador entrar a /audit', async () => {
+    autenticar('administrador');
+    simularApi();
+    window.history.pushState({}, '', '/audit');
+
+    render(<App />);
+
+    expect(await screen.findByRole('heading', { name: 'Auditoría del sistema' })).toBeInTheDocument();
+    expect(window.location.pathname).toBe('/audit');
+  });
+
+  it('redirige al recepcionista que intenta entrar a /audit', async () => {
+    autenticar('recepcionista');
+    simularApi();
+    window.history.pushState({}, '', '/audit');
+
+    render(<App />);
+
+    await waitFor(() => expect(window.location.pathname).toBe('/dashboard'));
+    expect(await screen.findByRole('heading', { name: 'Resumen operativo' })).toBeInTheDocument();
+  });
+
+  it('permite al cliente entrar a /me/access', async () => {
+    autenticar('cliente');
+    simularApi();
+    window.history.pushState({}, '', '/me/access');
+
+    render(<App />);
+
+    expect(await screen.findByRole('heading', { name: 'Mis accesos' })).toBeInTheDocument();
+    expect(window.location.pathname).toBe('/me/access');
+  });
+
+  it('permite al entrenador consultar el historial de accesos', async () => {
+    autenticar('entrenador');
+    simularApi();
+    window.history.pushState({}, '', '/access/historial');
+
+    render(<App />);
+
+    expect(await screen.findByRole('heading', { name: 'Accesos registrados' })).toBeInTheDocument();
+    expect(window.location.pathname).toBe('/access/historial');
+  });
 });

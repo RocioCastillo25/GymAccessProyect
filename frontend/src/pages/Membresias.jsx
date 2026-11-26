@@ -1,7 +1,25 @@
 // Gestión de membresías (HU2, FR-005 a FR-007, FR-010).
 
 import { useCallback, useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { pedir } from '../services/api.js';
+
+function formatearMoneda(valor) {
+  return Number(valor ?? 0).toLocaleString('es-GT', {
+    style: 'currency',
+    currency: 'GTQ',
+    minimumFractionDigits: 2,
+  });
+}
+
+function estaPorVencer(membresia) {
+  if (membresia.estado !== 'activa') return false;
+  const hoy = new Date();
+  hoy.setHours(0, 0, 0, 0);
+  const fin = new Date(`${membresia.fechaFin}T00:00:00`);
+  const dias = Math.round((fin.getTime() - hoy.getTime()) / 86400000);
+  return dias >= 0 && dias <= 5;
+}
 
 export default function Membresias() {
   const [membresias, setMembresias] = useState([]);
@@ -11,6 +29,7 @@ export default function Membresias() {
   const [idTipoMembresia, setIdTipoMembresia] = useState('');
   const [exito, setExito] = useState('');
   const [error, setError] = useState('');
+  const [renovacion, setRenovacion] = useState(null);
 
   const cargar = useCallback(async () => {
     try {
@@ -63,6 +82,15 @@ export default function Membresias() {
     }
   }
 
+  function seleccionarTipo(id) {
+    setIdTipoMembresia(String(id));
+    const selector = document.getElementById('tipo-membresia');
+    if (typeof selector?.scrollIntoView === 'function') {
+      selector.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+    selector?.focus();
+  }
+
   async function cambiarEstado(membresia, estado) {
     setExito('');
     setError('');
@@ -80,6 +108,32 @@ export default function Membresias() {
 
   const tiposActivos = tipos.filter((tipo) => tipo.estado === 'activo');
 
+  function iniciarRenovacion(membresia) {
+    setExito('');
+    setError('');
+    setRenovacion({
+      idMembresia: membresia.id,
+      idCliente: membresia.idCliente,
+      idTipoMembresia: tiposActivos[0]?.id ?? '',
+    });
+  }
+
+  async function confirmarRenovacion() {
+    setExito('');
+    setError('');
+    try {
+      const respuesta = await pedir(`/api/membresias/${renovacion.idMembresia}/renovar`, {
+        method: 'POST',
+        body: JSON.stringify({ idTipoMembresia: Number(renovacion.idTipoMembresia) }),
+      });
+      setExito(respuesta.mensaje);
+      setRenovacion(null);
+      await cargar();
+    } catch (err) {
+      setError(err.message);
+    }
+  }
+
   return (
     <>
       <section className="tarjeta formulario">
@@ -87,6 +141,52 @@ export default function Membresias() {
 
         {exito && <div className="mensaje-exito">{exito}</div>}
         {error && <div className="mensaje-error">{error}</div>}
+
+        {renovacion && (
+          <div
+            className="mensaje-confirmacion"
+            role="dialog"
+            aria-label="Confirmar renovación"
+          >
+            <p>
+              ¿Renovar la membresía {renovacion.idMembresia} de{' '}
+              {nombreCliente(renovacion.idCliente)}? La membresía anterior se conservará en el
+              historial.
+            </p>
+            <div className="campo">
+              <label htmlFor="tipo-renovacion">Tipo para la renovación</label>
+              <select
+                id="tipo-renovacion"
+                value={renovacion.idTipoMembresia}
+                onChange={(evento) =>
+                  setRenovacion({ ...renovacion, idTipoMembresia: evento.target.value })
+                }
+              >
+                {tiposActivos.map((tipo) => (
+                  <option key={tipo.id} value={tipo.id}>
+                    {tipo.nombre} ({tipo.duracion} días)
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="acciones">
+              <button
+                type="button"
+                onClick={confirmarRenovacion}
+                disabled={!renovacion.idTipoMembresia}
+              >
+                Confirmar renovación
+              </button>
+              <button
+                type="button"
+                className="secundario"
+                onClick={() => setRenovacion(null)}
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
+        )}
 
         <form onSubmit={asignar}>
           <div className="campo">
@@ -115,7 +215,7 @@ export default function Membresias() {
               <option value="">Seleccione un tipo</option>
               {tiposActivos.map((tipo) => (
                 <option key={tipo.id} value={tipo.id}>
-                  {tipo.nombre} ({tipo.duracion} días)
+                  {tipo.nombre} ({tipo.duracion} días) - {formatearMoneda(tipo.precio)}
                 </option>
               ))}
             </select>
@@ -127,6 +227,58 @@ export default function Membresias() {
             </button>
           </div>
         </form>
+      </section>
+
+      <section className="tarjeta">
+        <div className="cabecera-reporte">
+          <div>
+            <h2>Tipos de membresía disponibles</h2>
+            <p className="textosuave">
+              Elige un tipo en el formulario para asignarlo al cliente. Hay{' '}
+              {tiposActivos.length} tipo{tiposActivos.length === 1 ? '' : 's'} activo
+              {tiposActivos.length === 1 ? '' : 's'}.
+            </p>
+          </div>
+          <div className="acciones no-imprimir">
+            <Link className="boton-enlace" to="/memberships/types">
+              Gestionar tipos
+            </Link>
+          </div>
+        </div>
+
+        {tiposActivos.length === 0 && (
+          <div className="mensaje-error">
+            No hay tipos activos. Un administrador debe crear o activar un tipo en{' '}
+            <Link to="/memberships/types">Tipos de membresía</Link>.
+          </div>
+        )}
+
+        {tiposActivos.length > 0 && (
+          <div className="rejilla-tipos">
+            {tiposActivos.map((tipo) => (
+              <article
+                className={`tipo-card ${
+                  String(tipo.id) === idTipoMembresia ? 'seleccionado' : ''
+                }`}
+                key={tipo.id}
+              >
+                <div className="tipo-card-cabecera">
+                  <h3>{tipo.nombre}</h3>
+                  <span className="etiqueta-estado activo">{tipo.duracion} días</span>
+                </div>
+                <p className="textosuave">{tipo.descripcion || 'Sin descripción.'}</p>
+                <span className="tipo-precio">{formatearMoneda(tipo.precio)}</span>
+                <button
+                  type="button"
+                  className="secundario"
+                  onClick={() => seleccionarTipo(tipo.id)}
+                >
+                  {String(tipo.id) === idTipoMembresia ? 'Tipo seleccionado' : 'Usar este tipo'}
+                </button>
+              </article>
+            ))}
+          </div>
+        )}
       </section>
 
       <section className="tarjeta">
@@ -151,7 +303,10 @@ export default function Membresias() {
             </thead>
             <tbody>
               {membresias.map((membresia) => (
-                <tr key={membresia.id}>
+                <tr
+                  key={membresia.id}
+                  className={estaPorVencer(membresia) ? 'fila-alerta' : undefined}
+                >
                   <td>{membresia.id}</td>
                   <td>{nombreCliente(membresia.idCliente)}</td>
                   <td>{nombreTipo(membresia.idTipoMembresia)}</td>
@@ -161,8 +316,19 @@ export default function Membresias() {
                     <span className={`etiqueta-estado ${membresia.estado}`}>
                       {membresia.estado}
                     </span>
+                    {estaPorVencer(membresia) && (
+                      <span className="etiqueta-estado advertencia">Por vencer</span>
+                    )}
                   </td>
                   <td className="acciones">
+                    <button
+                      type="button"
+                      className="secundario"
+                      onClick={() => iniciarRenovacion(membresia)}
+                      disabled={tiposActivos.length === 0}
+                    >
+                      Renovar
+                    </button>
                     {membresia.estado === 'activa' && (
                       <button
                         type="button"

@@ -6,13 +6,17 @@ import request from 'supertest';
 import bcrypt from 'bcrypt';
 import app from '../../src/app.js';
 import { consultar, cerrarPool } from '../../src/config/baseDatos.js';
+import { crearUsuarioPrueba, limpiarUsuariosPrueba } from '../helpers/usuarios.js';
 
-const correoAdmin = process.env.SEED_ADMIN_EMAIL || 'admin@gimnasio.local';
-const passwordAdmin = process.env.SEED_ADMIN_PASSWORD || 'CambieClave123';
 const correoDesactivado = 'usuario.desactivado@pruebas.local';
+let adminPrueba = null;
 
 describe('Inicio de sesión (HU1)', () => {
   beforeAll(async () => {
+    // Cada ejecución usa su propio administrador para no depender de la
+    // contraseña real del administrador sembrado en la base local.
+    adminPrueba = await crearUsuarioPrueba('administrador');
+
     // Usuario de prueba desactivado para verificar FR-010.
     const hash = await bcrypt.hash('Prueba1234', 10);
     await consultar(
@@ -23,13 +27,14 @@ describe('Inicio de sesión (HU1)', () => {
 
   afterAll(async () => {
     await consultar('DELETE FROM usuarios WHERE correo = ?;', [correoDesactivado]);
+    await limpiarUsuariosPrueba();
     await cerrarPool();
   });
 
   it('devuelve token y datos del usuario con credenciales válidas', async () => {
     const respuesta = await request(app)
       .post('/api/auth/login')
-      .send({ correo: correoAdmin, password: passwordAdmin });
+      .send({ correo: adminPrueba.correo, password: adminPrueba.password });
 
     expect(respuesta.status).toBe(200);
     expect(respuesta.body.token).toBeTruthy();
@@ -41,11 +46,11 @@ describe('Inicio de sesión (HU1)', () => {
   it('rechaza la contraseña incorrecta con un mensaje genérico', async () => {
     const respuesta = await request(app)
       .post('/api/auth/login')
-      .send({ correo: correoAdmin, password: 'contraseña_incorrecta' });
+      .send({ correo: adminPrueba.correo, password: 'contraseña_incorrecta' });
 
     expect(respuesta.status).toBe(401);
     expect(respuesta.body.codigo).toBe('AUTENTICACION');
-    expect(respuesta.body.mensaje).not.toContain(correoAdmin);
+    expect(respuesta.body.mensaje).not.toContain(adminPrueba.correo);
   });
 
   it('responde igual cuando el correo no existe (no revela si está registrado)', async () => {
@@ -68,7 +73,9 @@ describe('Inicio de sesión (HU1)', () => {
   });
 
   it('rechaza la solicitud cuando faltan credenciales', async () => {
-    const respuesta = await request(app).post('/api/auth/login').send({ correo: correoAdmin });
+    const respuesta = await request(app)
+      .post('/api/auth/login')
+      .send({ correo: adminPrueba.correo });
 
     expect(respuesta.status).toBe(400);
     expect(respuesta.body.codigo).toBe('VALIDACION');

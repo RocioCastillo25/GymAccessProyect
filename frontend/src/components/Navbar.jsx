@@ -8,12 +8,16 @@ import { useSesion } from '../context/SesionContext.jsx';
 // medida de seguridad, el backend valida cada permiso.
 const ENLACES = [
   { ruta: '/dashboard', etiqueta: 'Dashboard', roles: ['administrador', 'recepcionista', 'entrenador'] },
+  { ruta: '/reports', etiqueta: 'Reportes', roles: ['administrador', 'recepcionista'] },
   { ruta: '/users', etiqueta: 'Usuarios', roles: ['administrador'] },
   { ruta: '/clients', etiqueta: 'Clientes', roles: ['administrador', 'recepcionista', 'entrenador'] },
   { ruta: '/memberships', etiqueta: 'Membresías', roles: ['administrador', 'recepcionista', 'entrenador'] },
   { ruta: '/payments', etiqueta: 'Pagos', roles: ['administrador', 'recepcionista'] },
   { ruta: '/access', etiqueta: 'Acceso', roles: ['administrador', 'recepcionista'] },
+  { ruta: '/audit', etiqueta: 'Auditoría', roles: ['administrador'] },
   { ruta: '/training', etiqueta: 'Entrenamiento', roles: ['administrador', 'recepcionista', 'entrenador'] },
+  { ruta: '/me/payments', etiqueta: 'Mis pagos', roles: ['cliente'] },
+  { ruta: '/me/access', etiqueta: 'Mis accesos', roles: ['cliente'] },
   { ruta: '/me/training', etiqueta: 'Mi entrenamiento', roles: ['cliente'] },
   { ruta: '/me/profile', etiqueta: 'Mi perfil', roles: ['cliente'] },
 ];

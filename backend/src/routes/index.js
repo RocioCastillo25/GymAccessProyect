@@ -14,6 +14,10 @@ import rutinaRouter from './rutina.routes.js';
 import objetivoRouter from './objetivo.routes.js';
 import progresoRouter from './progreso.routes.js';
 import dashboardRouter from './dashboard.routes.js';
+import reportsRouter from './reports.routes.js';
+import rostroRouter from './rostro.routes.js';
+import accesoRouter from './acceso.routes.js';
+import auditoriaRouter from './auditoria.routes.js';
 
 const router = Router();
 
@@ -30,5 +34,9 @@ router.use(rutinaRouter);
 router.use(objetivoRouter);
 router.use(progresoRouter);
 router.use(dashboardRouter);
+router.use(reportsRouter);
+router.use(rostroRouter);
+router.use(accesoRouter);
+router.use(auditoriaRouter);
 
 export default router;

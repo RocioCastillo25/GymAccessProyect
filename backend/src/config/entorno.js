@@ -16,20 +16,40 @@ if (existsSync(archivoBackend)) {
   dotenv.config({ path: archivoRaiz });
 }
 
-const esEntornoDePruebas = process.env.NODE_ENV === 'test';
-
 const obligatorias = ['DB_HOST', 'DB_PORT', 'DB_USER', 'DB_PASSWORD', 'DB_NAME', 'JWT_SECRET'];
 
-if (!esEntornoDePruebas) {
-  // En desarrollo y producción ninguna credencial puede faltar ni quedar vacía.
-  const faltantes = obligatorias.filter(
-    (variable) => !process.env[variable] || process.env[variable].trim() === ''
+/**
+ * Devuelve las variables obligatorias que faltan o están vacías.
+ * En el entorno de pruebas no se exigen para permitir pruebas aisladas.
+ * @param {Object} [entorno] - Variables a validar (por defecto `process.env`).
+ * @returns {Array<string>}
+ */
+export function variablesObligatoriasFaltantes(entorno = process.env) {
+  if (entorno.NODE_ENV === 'test') return [];
+  return obligatorias.filter(
+    (variable) => !entorno[variable] || String(entorno[variable]).trim() === ''
   );
-  if (faltantes.length > 0) {
-    throw new Error(
-      `Faltan variables de entorno: ${faltantes.join(', ')}. Copie .env.example como .env y complételo.`
-    );
-  }
+}
+
+/**
+ * Normaliza la lista de orígenes permitidos para CORS.
+ * @param {string} [valor] - Orígenes separados por comas.
+ * @returns {Array<string>}
+ */
+export function origenesCors(valor = '') {
+  return String(valor)
+    .split(',')
+    .map((origen) => origen.trim())
+    .filter(Boolean);
+}
+
+const faltantes = variablesObligatoriasFaltantes(process.env);
+
+if (faltantes.length > 0) {
+  // En desarrollo y producción ninguna credencial puede faltar ni quedar vacía.
+  throw new Error(
+    `Faltan variables de entorno: ${faltantes.join(', ')}. Copie .env.example como .env y complételo.`
+  );
 }
 
 export const config = {
@@ -49,6 +69,8 @@ export const config = {
     umbral: Number(process.env.FACIAL_UMBRAL || 0.6),
     maxIntentos: Number(process.env.FACIAL_MAX_INTENTOS || 3),
   },
+  // Origen(es) permitidos para CORS; vacío mantiene el comportamiento abierto de desarrollo.
+  corsOrigen: origenesCors(process.env.CORS_ORIGIN),
   puerto: Number(process.env.PORT || 3000),
   entorno: process.env.NODE_ENV || 'development',
 };

@@ -4,6 +4,9 @@
   "private": true,
   "description": "API REST del Sistema de Gestión para Gimnasio - Sprint 1",
   "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
   "main": "src/server.js",
   "scripts": {
     "dev": "node --watch src/server.js",

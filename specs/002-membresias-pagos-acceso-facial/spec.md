@@ -130,7 +130,8 @@ y visualiza los adeudos identificados por el sistema.
 1. **Dado** un administrador autenticado, **Cuando** consulta el historial de pagos, **Entonces** el
    sistema muestra los pagos registrados asociados a clientes y membresías.
 2. **Dado** un administrador autenticado, **Cuando** consulta adeudos, **Entonces** el sistema
-   identifica a los clientes con membresías activas sin el pago correspondiente.
+   muestra a los clientes con pagos pendientes y el total adeudado, según la definición operativa
+   de la funcionalidad 005 (`005-FR-011`).
 3. **Dado** un recepcionista o un entrenador autenticado, **Cuando** intenta consultar información
    financiera administrativa, **Entonces** el sistema aplica los permisos de su rol.
 4. **Dado** un usuario con rol cliente, **Cuando** consulta sus pagos y adeudos, **Entonces** el
@@ -290,6 +291,10 @@ entradas autorizadas como intentos rechazados con su motivo.
 
 **Pagos y adeudos**
 
+> Nota de trazabilidad: los `FR-011` a `FR-015` anteriores pertenecen a la spec 002. La consulta
+> operativa de pagos y adeudos se especifica en la funcionalidad 005 con identificadores
+> `005-FR-001` a `005-FR-019`.
+
 - **FR-011**: El administrador y el recepcionista DEBEN poder registrar pagos asociados a un cliente
   y a su membresía correspondiente, con monto, fecha, método de pago y estado.
 - **FR-012**: El administrador DEBE poder consultar el historial de pagos y los adeudos de los
@@ -297,8 +302,9 @@ entradas autorizadas como intentos rechazados con su motivo.
 - **FR-013**: El cliente DEBE poder consultar únicamente sus propios pagos y adeudos.
 - **FR-014**: El historial de pagos NO DEBE eliminarse de manera ordinaria; forma parte del
   historial financiero del sistema.
-- **FR-015**: El sistema DEBE identificar adeudos cuando exista una membresía activa sin el pago
-  correspondiente registrado.
+- **FR-015**: El sistema DEBE identificar adeudos como la suma de los pagos con estado `pendiente`
+  del cliente; la consulta operativa y su respuesta se definen en la funcionalidad 005
+  (`005-FR-011` a `005-FR-013`).
 
 **Reconocimiento facial**
 

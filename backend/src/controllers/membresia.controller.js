@@ -5,6 +5,7 @@ import {
   listarMembresias,
   obtenerMembresia,
   cambiarEstadoMembresia,
+  renovar,
   obtenerMembresiaPropia,
 } from '../services/membresia.service.js';
 import {
@@ -50,6 +51,18 @@ export async function cambiarEstado(req, res, next) {
     const membresia = await cambiarEstadoMembresia(id, req.body.estado, req.usuario);
     return res.status(200).json({
       mensaje: 'Estado de la membresía actualizado correctamente.',
+      membresia: presentarMembresia(membresia),
+    });
+  } catch (error) {
+    return next(error);
+  }
+}
+
+export async function renovarMembresia(req, res, next) {
+  try {
+    const membresia = await renovar(Number(req.params.id), req.body, req.usuario);
+    return res.status(201).json({
+      mensaje: 'Membresía renovada correctamente.',
       membresia: presentarMembresia(membresia),
     });
   } catch (error) {
