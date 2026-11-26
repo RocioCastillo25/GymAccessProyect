@@ -1,46 +1,3 @@
-<!--
-
-Reporte de Impacto de la Sincronización
-
-- Cambio de versión: sin versión (andamio sin rellenar) → 1.1.0
-
-- Origen del contenido: se traslada a `.specify/memory/constitution.md`
-  la constitución definida en `docs/reglas.md`, respetando su versión
-  declarada (1.1.0) y sus fechas de gobernanza, ya que no hay cambios
-  semánticos frente a esa fuente.
-
-- Principios añadidos desde el andamio (0 → 11):
-  - I. Alcance, MVP y Fuente de Verdad (NO NEGOCIABLE)
-  - II. Arquitectura con Responsabilidades Separadas (NO NEGOCIABLE)
-  - III. Stack Tecnológico y Base de Datos Local (NO NEGOCIABLE)
-  - IV. Base de Datos y Persistencia (NO NEGOCIABLE)
-  - V. Seguridad y Protección de Información (NO NEGOCIABLE)
-  - VI. Roles y Permisos
-  - VII. Integridad de las Reglas de Negocio (NO NEGOCIABLE)
-  - VIII. Reconocimiento Facial y Control de Acceso
-  - IX. API y Manejo de Errores
-  - X. Pruebas
-  - XI. UX/UI Profesional y Sencilla
-
-- Secciones añadidas: Tecnologías y Dependencias, Flujo de Desarrollo,
-  Decisiones Pendientes y Gobernanza.
-
-- Secciones eliminadas: ninguna (solo se reemplazaron los marcadores
-  de posición de la plantilla: [PROJECT_NAME], [PRINCIPLE_N_NAME],
-  [PRINCIPLE_N_DESCRIPTION], [SECTION_2_NAME], [SECTION_3_CONTENT],
-  [GOVERNANCE_RULES], [CONSTITUTION_VERSION], [RATIFICATION_DATE] y
-  [LAST_AMENDED_DATE]).
-
-- Estructura: se conserva la estructura de la plantilla activa
-  (constitution-template) con los títulos traducidos al español.
-
-- Ítems diferidos:
-  - TODO(RATIFICATION_DATE): la ratificación sigue "pendiente del
-    equipo" según `docs/reglas.md`; DEBE fijarse una fecha cuando el
-    equipo la apruebe.
-
--->
-
 # Constitución del Sistema de Gestión para Gimnasio
 
 El Sistema de Gestión para Gimnasio es un proyecto académico cuyo objetivo es
@@ -52,8 +9,10 @@ estado de las membresías, registrar pagos y validar el acceso de los clientes.
 También contará con diferentes roles para limitar el acceso a las funciones
 según las responsabilidades de cada usuario.
 
-El desarrollo del MVP se realizará en tres sprints y utilizará una arquitectura
-basada en React, Node.js, Express y MySQL.
+El MVP original se planificó en tres sprints. El proyecto ha aprobado y documentado
+además un Sprint 4, por lo que el desarrollo DEBE ajustarse al alcance vigente
+aprobado por el equipo y utilizar una arquitectura basada en React, Node.js,
+Express y MySQL.
 
 El detalle de los requisitos, módulos, entidades, reglas de negocio y sprints
 se encuentra en la documentación del proyecto y constituye la fuente de verdad
@@ -68,7 +27,14 @@ para el desarrollo.
 * NO se deben agregar funcionalidades que no formen parte del alcance sin
   autorización previa del equipo.
 
-* El desarrollo DEBE realizarse en tres sprints y respetar el orden establecido.
+* El MVP original se desarrolló en tres sprints; el alcance vigente incluye también
+  el Sprint 4 aprobado y documentado por el equipo.
+
+* El desarrollo DEBE respetar el orden y el alcance aprobados; cualquier ampliación
+  posterior DEBE aprobarse y documentarse antes de implementarse.
+
+* Las referencias históricas a «tres sprints» describen el alcance original del MVP
+  y NO limitan entregas posteriores aprobadas por el equipo.
 
 * El MVP DEBE concentrarse en las funciones principales del gimnasio:
   clientes, membresías, pagos, reconocimiento facial, control de acceso,
@@ -84,7 +50,9 @@ para el desarrollo.
   documentación del proyecto DEBE actualizarse.
 
 * Justificación: mantener un alcance definido permite desarrollar un sistema
-  funcional y evitar que el proyecto crezca de manera innecesaria.
+  funcional y evitar que el proyecto crezca de manera innecesaria. Reconocer el
+  Sprint 4 aprobado evita contradicciones entre la gobernanza y la documentación
+  vigente.
 
 ### II. Arquitectura con Responsabilidades Separadas (NO NEGOCIABLE)
 
@@ -527,14 +495,18 @@ aprobadas por el equipo:
 * Los cambios de versión seguirán el siguiente criterio:
 
   * **MAJOR:** cambio o eliminación de un principio importante.
-  * **MINOR:** incorporación de nuevos principios o secciones.
+  * **MINOR:** incorporación de nuevos principios o secciones, o ampliación
+    material de la orientación dentro de un principio existente.
   * **PATCH:** correcciones, aclaraciones o cambios menores de redacción.
 
 * El cumplimiento de estas reglas DEBE revisarse durante cada sprint.
 
 * Cualquier desviación DEBE justificarse y ser conocida por el equipo.
 
-**Versión:** 1.1.0
+TODO(RATIFICATION_DATE): la ratificación sigue pendiente del equipo; DEBE fijarse
+una fecha cuando el equipo apruebe la constitución.
+
+**Versión:** 1.2.0
 **Redactada:** 2026-10-06
 **Ratificación:** pendiente del equipo
-**Última enmienda:** 2026-10-06
+**Última enmienda:** 2026-11-26
