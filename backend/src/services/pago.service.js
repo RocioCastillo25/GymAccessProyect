@@ -7,6 +7,7 @@ import { validarPago } from '../validators/pago.validator.js';
 import { validarConsultaPagos } from '../validators/pagoConsulta.validator.js';
 import { errorValidacion, errorDuplicado, errorNoEncontrado } from '../utils/errores.js';
 import { registrarAccion } from './auditoria.service.js';
+import { obtenerClientePorCorreo } from './cliente.service.js';
 
 const MODULO = 'pagos';
 
@@ -86,6 +87,41 @@ export async function listarPagos(query = {}) {
   const [total, pagos] = await Promise.all([
     pagoModelo.contarFiltrados(valores),
     pagoModelo.listarFiltrados(valores),
+  ]);
+  const montoTotal = pagos.reduce((suma, pago) => suma + Number(pago.monto), 0);
+
+  const respuesta = {
+    pagos,
+    total,
+    montoTotal: Number(montoTotal.toFixed(2)),
+    limite: valores.limite,
+    offset: valores.offset,
+  };
+  if (pagos.length === 0) {
+    respuesta.mensaje = 'No hay pagos para los filtros seleccionados.';
+  }
+  return respuesta;
+}
+
+/**
+ * Devuelve el historial del cliente asociado al correo del JWT (005-FR-002).
+ * El `idCliente` enviado por la petición se valida pero se sustituye por el del
+ * token, de modo que nunca se exponen pagos ajenos (005-FR-006).
+ * @param {string} correo - Correo del usuario autenticado.
+ * @param {Object} query - Parámetros de la cadena de consulta.
+ * @returns {Promise<Object>} Misma forma que `listarPagos`.
+ */
+export async function listarPagosPropios(correo, query = {}) {
+  const cliente = await obtenerClientePorCorreo(correo);
+  const { errores, valores } = validarConsultaPagos(query);
+  if (errores.length > 0) {
+    throw errorValidacion('Revise los filtros enviados.', errores);
+  }
+
+  const filtros = { ...valores, idCliente: cliente.id_cliente };
+  const [total, pagos] = await Promise.all([
+    pagoModelo.contarFiltrados(filtros),
+    pagoModelo.listarFiltrados(filtros),
   ]);
   const montoTotal = pagos.reduce((suma, pago) => suma + Number(pago.monto), 0);
 

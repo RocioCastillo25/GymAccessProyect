@@ -96,16 +96,16 @@ al intentar `GET /api/pagos`.
 
 > **Nota**: escribir primero estas pruebas y comprobar que fallan antes de la implementación.
 
-- [ ] T014 [P] [US2] Crear `backend/tests/integration/pagosPropios.test.js` con `supertest` para cubrir pagos propios, filtros de fecha y estado, `idCliente` ajeno ignorado, estado vacío, `403` al historial general, `403` para entrenador, `401` sin token y `404` cuando el correo del token no tenga cliente asociado.
-- [ ] T015 [P] [US2] Crear `frontend/src/tests/MisPagos.test.jsx` con React Testing Library y `frontend/src/tests/servidorFalso.js` para verificar que solo se muestran los pagos del cliente y que no aparece selector de cliente.
+- [X] T014 [P] [US2] Crear `backend/tests/integration/pagosPropios.test.js` con `supertest` para cubrir pagos propios, filtros de fecha y estado, `idCliente` ajeno ignorado, estado vacío, `403` al historial general, `403` para entrenador, `401` sin token y `404` cuando el correo del token no tenga cliente asociado.
+- [X] T015 [P] [US2] Crear `frontend/src/tests/MisPagos.test.jsx` con React Testing Library y `frontend/src/tests/servidorFalso.js` para verificar que solo se muestran los pagos del cliente y que no aparece selector de cliente.
 
 ### Implementación de la historia de usuario 2
 
-- [ ] T016 [US2] Implementar `listarPagosPropios(correo, query)` en `backend/src/services/pago.service.js`: resolver el cliente con `obtenerClientePorCorreo`, forzar su `id_cliente`, ignorar cualquier `idCliente` de la petición, reutilizar `listarFiltrados`/`contarFiltrados` y devolver la misma forma que `listarPagos`.
-- [ ] T017 [US2] Implementar `listarPropios` en `backend/src/controllers/pago.controller.js` usando `req.usuario.correo` y `req.query`, con presentación mediante `presentarListaPagos`.
-- [ ] T018 [US2] Registrar `GET /api/pagos/mios` en `backend/src/routes/pago.routes.js` con `autorizar('cliente')`, declarándolo antes de cualquier ruta con parámetros.
-- [ ] T019 [US2] Crear `frontend/src/pages/MisPagos.jsx` con filtros `fechaInicio`, `fechaFin` y `estado`, tabla, paginación y mensajes en español, sin campo de cliente, usando `pedir` de `frontend/src/services/api.js`.
-- [ ] T020 [US2] Registrar el módulo `/me/payments` con la vista `MisPagos` para rol `cliente` en `frontend/src/App.jsx` y agregar el enlace "Mis pagos" en `frontend/src/components/Navbar.jsx`.
+- [X] T016 [US2] Implementar `listarPagosPropios(correo, query)` en `backend/src/services/pago.service.js`: resolver el cliente con `obtenerClientePorCorreo`, forzar su `id_cliente`, ignorar cualquier `idCliente` de la petición, reutilizar `listarFiltrados`/`contarFiltrados` y devolver la misma forma que `listarPagos`.
+- [X] T017 [US2] Implementar `listarPropios` en `backend/src/controllers/pago.controller.js` usando `req.usuario.correo` y `req.query`, con presentación mediante `presentarListaPagos`.
+- [X] T018 [US2] Registrar `GET /api/pagos/mios` en `backend/src/routes/pago.routes.js` con `autorizar('cliente')`, declarándolo antes de cualquier ruta con parámetros.
+- [X] T019 [US2] Crear `frontend/src/pages/MisPagos.jsx` con filtros `fechaInicio`, `fechaFin` y `estado`, tabla, paginación y mensajes en español, sin campo de cliente, usando `pedir` de `frontend/src/services/api.js`.
+- [X] T020 [US2] Registrar el módulo `/me/payments` con la vista `MisPagos` para rol `cliente` en `frontend/src/App.jsx` y agregar el enlace "Mis pagos" en `frontend/src/components/Navbar.jsx`.
 
 **Punto de control**: las historias 1 y 2 funcionan de forma independiente.
 

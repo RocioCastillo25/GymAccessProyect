@@ -16,6 +16,7 @@ import TiposMembresia from './pages/TiposMembresia.jsx';
 import Membresias from './pages/Membresias.jsx';
 import PagosRegistro from './pages/PagosRegistro.jsx';
 import PagosHistorial from './pages/PagosHistorial.jsx';
+import MisPagos from './pages/MisPagos.jsx';
 import Acceso from './pages/Acceso.jsx';
 import Entrenadores from './pages/Entrenadores.jsx';
 import Asignaciones from './pages/Asignaciones.jsx';
@@ -96,6 +97,11 @@ const MODULOS = [
       { ruta: 'routines', etiqueta: 'Rutinas', Componente: Rutinas, roles: ['entrenador'] },
       { ruta: 'progress', etiqueta: 'Objetivos y progreso', Componente: Progreso, roles: ['entrenador'] },
     ],
+  },
+  {
+    base: '/me/payments',
+    titulo: 'Mis pagos',
+    vistas: [{ ruta: '', Componente: MisPagos, roles: ['cliente'] }],
   },
   {
     base: '/me/training',
