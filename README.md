@@ -4,7 +4,8 @@ Plataforma web para administrar clientes, membresías, pagos y accesos mediante 
 facial. Proyecto académico desarrollado en cuatro sprints.
 
 **Estado actual**: Sprint 4 completado (reportes financieros y de accesos, exportación CSV/PDF,
-alertas de vencimiento próximo y optimización de índices), sobre la base de los Sprints 1, 2 y 3.
+alertas de vencimiento próximo y optimización de índices), sobre la base de los Sprints 1, 2 y 3,
+más la consulta operativa de pagos y adeudos de la funcionalidad 005.
 
 ## Estructura del proyecto
 
@@ -63,6 +64,35 @@ Además, `database/migrations/005_tipos_membresia_iniciales.sql` carga seis tipo
 iniciales (Diario, Semanal, Mensual, Trimestral, Semestral y Anual) para poder asignarlos desde el
 módulo de Membresías. La migración es reejecutable y no duplica los tipos existentes.
 
+### Consulta de pagos y adeudos (funcionalidad 005)
+
+Operaciones de solo lectura sobre el historial existente: no crean migraciones, no modifican
+`POST /api/pagos` y resuelven al cliente de las consultas propias desde el correo del token JWT.
+
+| Endpoint | Consulta | Roles autorizados |
+|----------|----------|-------------------|
+| `GET /api/pagos` | Historial general con filtros de fecha, cliente y estado, y paginación | administrador, recepcionista |
+| `GET /api/pagos/mios` | Pagos del cliente autenticado, con los mismos filtros y paginación | cliente |
+| `GET /api/pagos/adeudos` | Adeudos agrupados por cliente, con filtro opcional de cliente y paginación | administrador, recepcionista |
+| `GET /api/pagos/adeudos/mios` | Adeudo del cliente autenticado, sin paginación | cliente |
+
+El adeudo es la suma de los pagos con estado `pendiente`; los pagos `completados` y `cancelados` no
+cuentan. Las consultas propias ignoran cualquier `idCliente` enviado: el resultado siempre corresponde
+al cliente de la sesión. La paginación usa `limite` (50 por defecto, 200 como máximo) y `offset` (0
+por defecto).
+
+| Vista | Ruta | Roles autorizados |
+|-------|------|-------------------|
+| Registro de pagos | `/payments` | administrador, recepcionista |
+| Historial de pagos | `/payments/historial` | administrador, recepcionista |
+| Adeudos por cliente | `/payments/adeudos` | administrador, recepcionista |
+| Mis pagos | `/me/payments` | cliente |
+| Mis adeudos | `/me/payments/adeudos` | cliente |
+
+Sin token las respuestas son `401`; con un rol no autorizado, `403`. Los entrenadores no pueden
+consultar pagos ni adeudos. La validación detallada está en
+`specs/005-consulta-pagos-adeudos/quickstart.md`.
+
 ## Requisitos previos
 
 - Node.js 20 o superior
@@ -114,7 +144,7 @@ cd backend; npm test
 cd frontend; npm test
 ```
 
-Resultado actual: 177 pruebas del backend y 46 pruebas del frontend, todas aprobadas.
+Resultado actual: 210 pruebas del backend y 59 pruebas del frontend, todas aprobadas.
 
 ## Rendimiento
 

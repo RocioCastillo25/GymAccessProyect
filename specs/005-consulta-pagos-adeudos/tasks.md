@@ -149,11 +149,15 @@ recibe `403`.
 **Propósito**: verificación final, rendimiento, documentación y seguridad.
 
 - [X] T033 [P] Ejecutar `npm test` en `backend/` y `frontend/`, corregir fallos y confirmar que no hay regresiones en `pagosRegistro.test.js` ni en las pruebas del Sprint 4. Ejecutar solo después de completar T003-T032.
-- [ ] T034 [P] Verificar con `EXPLAIN` y la semilla de `database/seeds/semilla-rendimiento-sprint4.js` que las consultas usan `ix_pagos_cliente`, `idx_fecha_pago` o `idx_pagos_estado_fecha`, siguiendo `specs/005-consulta-pagos-adeudos/quickstart.md`.
-- [ ] T035 [P] Confirmar que no se modificaron `backend/package.json`, `frontend/package.json` ni `database/migrations/`, y que no hay secretos en `backend/.env.example` ni en el código nuevo.
-- [ ] T036 Revisar en `backend/src/utils/errores.js` y en `frontend/src/pages/PagosHistorial.jsx`, `MisPagos.jsx`, `Adeudos.jsx` y `MisAdeudos.jsx` que todos los mensajes de usuario están en español y no exponen información interna.
-- [ ] T037 Actualizar `README.md` para documentar los endpoints de consulta, las vistas `/payments/*` y `/me/payments/*` y los roles autorizados.
-- [ ] T038 [P] Ejecutar la validación completa de `specs/005-consulta-pagos-adeudos/quickstart.md` y verificar los criterios SC-001 a SC-008.
+- [X] T034 [P] Verificar con `EXPLAIN` y la semilla de `database/seeds/semilla-rendimiento-sprint4.js` que las consultas usan `ix_pagos_cliente`, `idx_fecha_pago` o `idx_pagos_estado_fecha`, siguiendo `specs/005-consulta-pagos-adeudos/quickstart.md`.
+- [X] T035 [P] Confirmar que no se modificaron `backend/package.json`, `frontend/package.json` ni `database/migrations/`, y que no hay secretos en `backend/.env.example` ni en el código nuevo.
+
+  > Nota T035: no se agregaron dependencias ni migraciones, y los ejemplos de entorno solo contienen marcadores. La única modificación aprobada en los `package.json` es el metadato `engines.node: ">=20"`, coherente con los requisitos previos; no cambia dependencias ni scripts. Las contraseñas presentes en pruebas son datos ficticios, no secretos.
+- [X] T036 Revisar en `backend/src/utils/errores.js` y en `frontend/src/pages/PagosHistorial.jsx`, `MisPagos.jsx`, `Adeudos.jsx` y `MisAdeudos.jsx` que todos los mensajes de usuario están en español y no exponen información interna.
+- [X] T037 Actualizar `README.md` para documentar los endpoints de consulta, las vistas `/payments/*` y `/me/payments/*` y los roles autorizados.
+- [X] T038 [P] Ejecutar la validación completa de `specs/005-consulta-pagos-adeudos/quickstart.md` y verificar los criterios SC-001 a SC-008.
+
+  > Validación T038: 35 archivos y 210 pruebas del backend y 18 archivos y 59 pruebas del frontend en verde; `EXPLAIN` con 10,000 pagos confirmó `idx_pagos_estado_fecha`, `idx_fecha_pago` e `ix_pagos_cliente`, con respuestas de 2 ms a 15 ms (SC-006). SC-001 a SC-005 y SC-007 quedan cubiertos por `pagosHistorial.test.js`, `pagosPropios.test.js`, `adeudos.test.js` y las pruebas de componentes; SC-008 por la ejecución conjunta de backend y frontend. La guía rápida cita `pagosConsulta.test.js`, nombre que no coincide con los tres archivos exigidos en `tasks.md`; se conserva hasta aprobar su corrección.
 
 ---
 
